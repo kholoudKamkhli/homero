@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:video_player/video_player.dart';
 
+import '../sign_in/sign_in_view.dart';
+
 class SplashScreenOne extends StatefulWidget {
 static const String routeName = "splash1";
   @override
@@ -19,7 +21,7 @@ class _SplashScreenOneState extends State<SplashScreenOne> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreenView(),
+            builder: (context) => SignInView(),
           ),
         );
       });
