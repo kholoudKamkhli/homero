@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpView extends StatefulWidget {
 static const String routeName = "SignUp";
@@ -339,7 +341,7 @@ bool valuesecond = false;
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(onPressed: (){
-                      loginWithFacebook();
+                      signInWithFacebook();
                     }, icon:Image.asset("assets/images/img_26.png") ),
                     IconButton(onPressed: (){}, icon: Image.asset("assets/images/img_28.png")),
                     IconButton(onPressed: (){}, icon: Image.asset("assets/images/img_27.png")),
@@ -353,6 +355,14 @@ bool valuesecond = false;
       ),
     );
   }
+    Future<UserCredential> signInWithFacebook() async {
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login();
 
-  void loginWithFacebook() {}
-}
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+      // Once signed in, return the UserCredential
+      return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    }
+  }
