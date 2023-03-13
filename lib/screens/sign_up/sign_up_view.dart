@@ -8,6 +8,11 @@ static const String routeName = "SignUp";
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  var emailCont = TextEditingController();
+  var passwordCont = TextEditingController();
+  var numberCont = TextEditingController();
+  var nameCont = TextEditingController();
+
 bool valuefirst = false;
 
 bool valuesecond = false;
@@ -15,7 +20,7 @@ bool valuesecond = false;
 @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -66,6 +71,7 @@ bool valuesecond = false;
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
+                            controller: nameCont,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Please enter valid name";
@@ -112,6 +118,7 @@ bool valuesecond = false;
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
+                            controller: emailCont,
                             validator: (value) {
                               if (value != null &&
                                   value.isNotEmpty &&
@@ -162,6 +169,7 @@ bool valuesecond = false;
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
+                            controller: passwordCont,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return "Password can't be empty";
@@ -208,6 +216,7 @@ bool valuesecond = false;
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 2),
                           child: TextFormField(
+                            controller: numberCont,
                             validator: (value) {
                               if (value != null &&
                                   value.isNotEmpty &&
@@ -329,7 +338,9 @@ bool valuesecond = false;
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(onPressed: (){}, icon:Image.asset("assets/images/img_26.png") ),
+                    IconButton(onPressed: (){
+                      loginWithFacebook();
+                    }, icon:Image.asset("assets/images/img_26.png") ),
                     IconButton(onPressed: (){}, icon: Image.asset("assets/images/img_28.png")),
                     IconButton(onPressed: (){}, icon: Image.asset("assets/images/img_27.png")),
                     IconButton(onPressed: (){}, icon: Image.asset("assets/images/img_29.png")),
@@ -342,4 +353,6 @@ bool valuesecond = false;
       ),
     );
   }
+
+  void loginWithFacebook() {}
 }
