@@ -24,7 +24,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar:selectedIndex==2?AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Image.asset(
@@ -53,6 +53,18 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             },
           ),
         ],
+      ):AppBar(
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(names[selectedIndex],style: TextStyle(
+          color: Color.fromARGB(255, 84, 84, 84)
+        ),),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
+          onPressed: () => Navigator.pushNamed(context, HomeScreenView.routeName),
+        ),
+        elevation: 0,
+
       ),
       bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Color.fromARGB(255, 52, 205, 196),
@@ -93,4 +105,5 @@ class _HomeScreenViewState extends State<HomeScreenView> {
     );
   }
   List<Widget> tabs = [ProfileView(),OrdersView(),HomeTab(),ServicesView(),SettingsView()];
+  List<String>names = ["Profile","Orders","","Services","Settings"];
 }
