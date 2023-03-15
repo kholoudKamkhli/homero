@@ -361,7 +361,8 @@ class _SignInViewState extends State<SignInView> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-
+    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    UserDatabase.addUserToDatabase(user);
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
@@ -372,6 +373,8 @@ class _SignInViewState extends State<SignInView> {
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
     FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    UserDatabase.addUserToDatabase(user);
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);

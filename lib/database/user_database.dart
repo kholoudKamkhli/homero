@@ -9,6 +9,13 @@ class UserDatabase{
   static Future<void>addUserToDatabase(MyUser user){
     return getUsersCollection().doc(user.id).set(user);
   }
+  static Future<bool> exists(String id)async{
+    var user = await getUsersCollection().doc(id).get();
+    if(user==null){
+      return true;
+    }
+    else return false;
+  }
   static Future<MyUser?> getUser(String id)async{
     var user = await getUsersCollection().doc(id).get();
     var myUser = user.data();

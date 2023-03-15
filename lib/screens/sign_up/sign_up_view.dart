@@ -3,6 +3,8 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homero/bases/BaseSign.dart';
+import 'package:homero/database/user_database.dart';
+import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
 import 'package:homero/screens/sign_up/sign_un_view_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -371,7 +373,7 @@ class _SignUpViewState extends State<SignUpView> {
                       IconButton(
                           onPressed: () async {
                             try {
-                              await signInWithGoogle();
+                              await signInWithFacebook();
                               if (FirebaseAuth.instance.currentUser != null) {
                                 Navigator.pushReplacementNamed(
                                     context, HomeScreenView.routeName);
@@ -424,7 +426,7 @@ class _SignUpViewState extends State<SignUpView> {
             pageBuilder: (_, __, ___) =>
                 OTPVerificstion(verificationId: verificationId,
                   mail: emailCont.text,
-                  password: passwordCont.text,phone:numberCont.text,username:nameCont.text)));
+                  password: passwordCont.text,phone:numberCont.text,username:completeNum)));
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
@@ -449,7 +451,8 @@ class _SignUpViewState extends State<SignUpView> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-
+    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    UserDatabase.addUserToDatabase(user);
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
@@ -461,6 +464,8 @@ class _SignUpViewState extends State<SignUpView> {
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
     FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    UserDatabase.addUserToDatabase(user);
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
