@@ -1,6 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/sign_in/sign_in_view_model.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
+
+import '../../database/user_database.dart';
+import '../../models/user_model.dart';
 
 class SignInView extends StatefulWidget {
   static const String routeName = "SignUp";
@@ -199,7 +206,7 @@ class _SignInViewState extends State<SignInView> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10)),
                             child: const Text(
-                              "Login in",
+                              "Log in",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600,
@@ -254,13 +261,29 @@ class _SignInViewState extends State<SignInView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  viewModel.signInWithFacebook();
+                                onPressed: ()async {
+                                  try{
+                                    await signInWithFacebook();
+                                    if(FirebaseAuth.instance.currentUser!=null){
+                                      Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+                                    }
+                                  }
+                                  catch(e){
+
+                                  }
                                 },
                                 icon: Image.asset("assets/images/img_19.png")),
                             IconButton(
-                                onPressed: () {
-                                  viewModel.signInWithGoogle();
+                                onPressed: () async{
+                                  try{
+                                    await signInWithGoogle();
+                                    if(FirebaseAuth.instance.currentUser!=null){
+                                      Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+                                    }
+                                  }
+                                  catch(e){
+
+                                  }
                                 },
                                 icon: Image.asset("assets/images/img_21.png")),
                             IconButton(
@@ -304,9 +327,53 @@ class _SignInViewState extends State<SignInView> {
     );
   }
 
-  void validateForm() {
+  void validateForm() async{
     if(formKey.currentState!.validate()){
-      print("validated");
+      try {
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailCont.text,
+            password: passwordCont.text
+        );
+        //MyUser? user = await UserDatabase.getUser(credential.user?.uid ?? "");
+
+          Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+          return;
+
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
+      }
     }
+  }
+  static Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+  static Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+    FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 }

@@ -7,6 +7,8 @@ import 'package:homero/screens/otp/otp_verification.dart';
 import 'package:homero/screens/sign_up/sign_un_view_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
+import '../home_screen/home_screen_view.dart';
+
 class SignUpView extends StatefulWidget {
   static const String routeName = "SignUp";
 
@@ -14,7 +16,7 @@ class SignUpView extends StatefulWidget {
   State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _SignUpViewState extends State<SignUpView>implements BaseConnector {
+class _SignUpViewState extends State<SignUpView> {
   late var viewModel;
   var formKey = GlobalKey<FormState>();
   var emailCont = TextEditingController();
@@ -26,6 +28,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
   bool valuefirst = false;
 
   bool valuesecond = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,7 +80,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     alignment: Alignment.centerLeft,
                     width: 327,
                     height: 70,
-                    margin:const EdgeInsets.symmetric(horizontal: 50),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.black45)),
@@ -102,7 +105,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                         SizedBox(
                           height: 35,
                           child: Padding(
-                            padding:const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: TextFormField(
                               controller: nameCont,
                               validator: (value) {
@@ -129,7 +132,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     alignment: Alignment.centerLeft,
                     width: 327,
                     height: 70,
-                    margin:const EdgeInsets.symmetric(horizontal: 50),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.black45)),
@@ -154,13 +157,14 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                         SizedBox(
                           height: 35,
                           child: Padding(
-                            padding:const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: TextFormField(
                               controller: emailCont,
                               validator: (value) {
                                 if (value != null &&
                                     value.isNotEmpty &&
-                                    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                    RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                         .hasMatch(value)) {
                                   return null;
                                 } else {
@@ -184,7 +188,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     alignment: Alignment.centerLeft,
                     width: 327,
                     height: 70,
-                    margin:const EdgeInsets.symmetric(horizontal: 50),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.black45)),
@@ -209,7 +213,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                         SizedBox(
                           height: 35,
                           child: Padding(
-                            padding:const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: TextFormField(
                               controller: passwordCont,
                               validator: (value) {
@@ -233,14 +237,15 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     height: 10,
                   ),
                   Container(
-                    padding:EdgeInsets.only(bottom: 8,right: 5),
+                    padding: EdgeInsets.only(bottom: 8, right: 5),
                     alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 50,vertical: 8),
+                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 8),
                     width: 327,
                     height: 70,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color.fromARGB(255, 126, 127, 131)),
+                      border: Border.all(
+                          color: Color.fromARGB(255, 126, 127, 131)),
                     ),
                     child: IntlPhoneField(
                       controller: numberCont,
@@ -266,12 +271,14 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                       alignment: Alignment.center,
                       height: 60,
                       width: 327,
-                      margin:const EdgeInsets.symmetric(horizontal: 50, vertical: 18),
-                      padding:const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 18),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 18),
                       decoration: BoxDecoration(
-                          color:const Color.fromARGB(255, 52, 205, 196),
+                          color: const Color.fromARGB(255, 52, 205, 196),
                           borderRadius: BorderRadius.circular(10)),
-                      child:const Text(
+                      child: const Text(
                         "Continue",
                         style: TextStyle(
                           fontSize: 20,
@@ -294,12 +301,12 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     children: [
                       Container(
                         alignment: Alignment.topLeft,
-                        margin:const EdgeInsets.only(left: 35, top: 18),
+                        margin: const EdgeInsets.only(left: 35, top: 18),
                         child: Checkbox(
                             value: valuesecond,
                             //fillColor: MaterialStateProperty.resolveWith((states) => null),
                             activeColor: Colors.transparent,
-                            checkColor:const Color.fromARGB(255, 84, 84, 84),
+                            checkColor: const Color.fromARGB(255, 84, 84, 84),
                             onChanged: (bool? value) {
                               setState(() {
                                 if (value != null) valuesecond = value;
@@ -308,9 +315,12 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        margin:const EdgeInsets.symmetric(vertical: 18),
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child:const Text(
+                        margin: const EdgeInsets.symmetric(vertical: 18),
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.6,
+                        child: const Text(
                           "By creating your account on Homero agree to the Terms of Uses, Conditions & Privacy Policies",
                           style: TextStyle(
                             color: Color.fromARGB(255, 84, 84, 84),
@@ -329,7 +339,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                         width: 46,
                         height: 1,
                         decoration: BoxDecoration(
-                            color:const Color.fromARGB(255, 84, 84, 84),
+                            color: const Color.fromARGB(255, 84, 84, 84),
                             borderRadius: BorderRadius.circular(10)),
                       ),
                       const SizedBox(
@@ -349,7 +359,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                         width: 46,
                         height: 1,
                         decoration: BoxDecoration(
-                            color:const Color.fromARGB(255, 84, 84, 84),
+                            color: const Color.fromARGB(255, 84, 84, 84),
                             borderRadius: BorderRadius.circular(10)),
                       ),
                     ],
@@ -359,13 +369,31 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                          onPressed: () {
-                            viewModel.signInWithFacebook();
+                          onPressed: () async {
+                            try {
+                              await signInWithGoogle();
+                              if (FirebaseAuth.instance.currentUser != null) {
+                                Navigator.pushReplacementNamed(
+                                    context, HomeScreenView.routeName);
+                              }
+                            }
+                            catch (e) {
+
+                            }
                           },
                           icon: Image.asset("assets/images/img_26.png")),
                       IconButton(
-                          onPressed: () {
-                            viewModel.signInWithGoogle();
+                          onPressed: () async {
+                            try {
+                              await signInWithGoogle();
+                              if (FirebaseAuth.instance.currentUser != null) {
+                                Navigator.pushReplacementNamed(
+                                    context, HomeScreenView.routeName);
+                              }
+                            }
+                            catch (e) {
+
+                            }
                           },
                           icon: Image.asset("assets/images/img_28.png")),
                       IconButton(
@@ -384,6 +412,7 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
       ),
     );
   }
+
   void sinInWithPhone() async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: completeNum,
@@ -393,7 +422,9 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
       codeSent: (String verificationId, int? resendToken) {
         Navigator.of(context).push(PageRouteBuilder(
             pageBuilder: (_, __, ___) =>
-                OTPVerificstion(verificationId: verificationId)));
+                OTPVerificstion(verificationId: verificationId,
+                  mail: emailCont.text,
+                  password: passwordCont.text,phone:numberCont.text,username:nameCont.text)));
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
@@ -405,10 +436,40 @@ class _SignUpViewState extends State<SignUpView>implements BaseConnector {
     }
   }
 
-  @override
-  void navigate(String verificationId) {
-    Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (_, __, ___) =>
-            OTPVerificstion(verificationId: verificationId)));
+  static Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+  static Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+    FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
+
+
+// void navigate(String verificationId) {
+//   Navigator.of(context).push(PageRouteBuilder(
+//       pageBuilder: (_, __, ___) =>
+//           OTPVerificstion(verificationId: verificationId)));
+// }
 }
