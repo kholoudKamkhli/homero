@@ -4,12 +4,14 @@ class MyUser{
   String username;
   String email;
   String phoneNum;
-  MyUser({required this.id,required this.username,required this.email,required this.phoneNum});
+  String imageUrl;
+  MyUser({required this.id,required this.username,required this.email,required this.phoneNum,this.imageUrl = ""});
   MyUser.fromJson(Map<String,dynamic>json):this(
     id:json["id"],
     username:json["username"],
     email:json["email"],
-    phoneNum:json["phoneNum"]
+    phoneNum:json["phoneNum"],
+    imageUrl:json["imageUrl"]
   );
   Map<String,dynamic>toJson(){
     return {
@@ -17,6 +19,7 @@ class MyUser{
       "username":username,
       "email":email,
       "phoneNum":phoneNum,
+      "imageUrl":imageUrl
     };
   }
 }

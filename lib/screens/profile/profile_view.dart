@@ -1,9 +1,59 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:homero/database/user_database.dart';
+import 'package:homero/models/user_model.dart';
+import 'package:homero/screens/sign_in/sign_in_view.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'dart:io';
+class ProfileView extends StatefulWidget {
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
 
-class ProfileView extends StatelessWidget {
+class _ProfileViewState extends State<ProfileView> {
+  MyUser ? user;
+  @override
+  void initState(){
+    // TODO: implement initState
+    super.initState();
+    initUser();
+
+  }
+  Future<void> initUser() async {
+    print("we are initting user");
+    print(FirebaseAuth.instance.currentUser!.uid);
+    user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+    setState(() {
+
+    });
+  }
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image ;
+  Future getImage()async{
+    var image = await _picker.pickImage(source: ImageSource.gallery);
+    _image = image;
+    print(_image?.path??"null path");
+    if(_image!=null){
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference referenceImages = referenceRoot.child('images');
+      Reference referenceImageToUpload = referenceImages.child(_image!.path);
+      try{
+        await referenceImageToUpload.putFile(File(_image!.path));
+        String imageUrl = await referenceImageToUpload.getDownloadURL();
+        user!.imageUrl = imageUrl;
+        await UserDatabase.updateImage(user!, imageUrl);
+
+      }catch(error){
+      }
+    }
+    setState((){
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return user==null?Center(child: CircularProgressIndicator(),):Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -11,15 +61,26 @@ class ProfileView extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             height: 100,
-            child: ClipRRect(
-              child: Image.asset("assets/images/img_32.png"),
+            child: InkWell(
+              onTap: ()async{
+                getImage();
+              },
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.transparent,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child:user!.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user!.imageUrl),
+                     // user.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user.imageUrl)),
+
+                ))
+              ),
             ),
-          ),
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            "Sara ali",
+           Text(
+            user!.username,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 18,
@@ -234,24 +295,30 @@ class ProfileView extends StatelessWidget {
               onTap: () {},
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.logout,
                     color: Color.fromARGB(255, 84, 84, 84),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 84, 84, 84),
+                  InkWell(
+                    onTap:(){
+                      //FirebaseAuth.instance.signOut();
+                      //Navigator.pushReplacementNamed(context, SignInView.routeName);
+                    },
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 84, 84, 84),
+                      ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 145,
                   ),
-                  Icon(Icons.navigate_next,
+                  const Icon(Icons.navigate_next,
                       color: Color.fromARGB(255, 84, 84, 84))
                 ],
               ),

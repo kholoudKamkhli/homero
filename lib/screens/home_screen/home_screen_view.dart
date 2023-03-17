@@ -35,7 +35,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
         centerTitle: false,
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.notifications_none,
               color: Colors.black,
             ),
@@ -44,7 +44,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             },
           ),
           IconButton(
-            icon: ImageIcon(
+            icon: const ImageIcon(
               AssetImage("assets/images/img_1.png"),
               color: Color.fromARGB(255, 52, 205, 196),
             ),
@@ -56,20 +56,20 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       ):AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text(names[selectedIndex],style: TextStyle(
+        title: Text(names[selectedIndex],style: const TextStyle(
           color: Color.fromARGB(255, 84, 84, 84)
         ),),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
           onPressed: () => Navigator.pushNamed(context, HomeScreenView.routeName),
         ),
         elevation: 0,
 
       ),
       bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Color.fromARGB(255, 52, 205, 196),
+          selectedItemColor: const Color.fromARGB(255, 52, 205, 196),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color.fromARGB(255, 217, 217, 217),
+          backgroundColor: const Color.fromARGB(255, 217, 217, 217),
           onTap: (selected){
 
             setState(() {
@@ -77,7 +77,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             });
           },
           currentIndex: selectedIndex,
-          items: [
+          items: const [
             BottomNavigationBarItem(
               backgroundColor: Color.fromARGB(255, 217, 217, 217),
               //backgroundColor: Theme.of(context).primaryColor,
@@ -89,7 +89,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               label: "Orders",),
             BottomNavigationBarItem(
               backgroundColor: Color.fromARGB(255, 217, 217, 217),
-              icon:const Icon(Icons.home),
+              icon:Icon(Icons.home),
               label: "Home",),
             BottomNavigationBarItem(
               backgroundColor: Color.fromARGB(255, 217, 217, 217),
@@ -97,13 +97,13 @@ class _HomeScreenViewState extends State<HomeScreenView> {
               label: "Services",),
             BottomNavigationBarItem(
               backgroundColor: Color.fromARGB(255, 217, 217, 217),
-              icon: const ImageIcon(AssetImage("assets/images/img_16.png")),
+              icon: ImageIcon(AssetImage("assets/images/img_16.png")),
               label: "Settings",),
           ]
       ),
       body: tabs[selectedIndex],
     );
   }
-  List<Widget> tabs = [ProfileView(),OrdersView(),HomeTab(),ServicesView(),SettingsView()];
+  List<Widget> tabs = [ProfileView(),const OrdersView(),HomeTab(),ServicesView(),SettingsView()];
   List<String>names = ["Profile","Orders","","Services","Settings"];
 }

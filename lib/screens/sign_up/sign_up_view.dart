@@ -451,7 +451,8 @@ class _SignUpViewState extends State<SignUpView> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
-    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
+    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"",imageUrl: FirebaseAuth.instance.currentUser?.photoURL??"");
     UserDatabase.addUserToDatabase(user);
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
@@ -464,7 +465,11 @@ class _SignUpViewState extends State<SignUpView> {
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
     FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
     MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    if(user.imageUrl==""){
+      user.imageUrl = FirebaseAuth.instance.currentUser?.photoURL??"";
+    }
     UserDatabase.addUserToDatabase(user);
 
     // Once signed in, return the UserCredential

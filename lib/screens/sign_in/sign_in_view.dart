@@ -373,8 +373,21 @@ class _SignInViewState extends State<SignInView> {
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
     FacebookAuthProvider.credential(loginResult.accessToken!.token);
-    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
-    UserDatabase.addUserToDatabase(user);
+    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
+    print("we are inside facebook");
+    if(!await UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"")){
+      MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+      if(user.imageUrl==""){
+        user.imageUrl = FirebaseAuth.instance.currentUser?.photoURL??"";
+      }
+      UserDatabase.addUserToDatabase(user);
+    }
+    // MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
+    // if(user.imageUrl==""){
+    //   user.imageUrl = FirebaseAuth.instance.currentUser?.photoURL??"";
+    // }
+    // UserDatabase.addUserToDatabase(user);
+    print("after database");
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);

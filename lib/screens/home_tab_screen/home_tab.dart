@@ -8,12 +8,12 @@ import 'service_widget.dart';
 class HomeTab extends StatelessWidget {
   List<AdWidget> adWidgest = [AdWidget(), AdWidget(), AdWidget()];
 
-  List<PackageWidget> packages = [PackageWidget(title: "Wedding", color: Color.fromARGB(
+  List<PackageWidget> packages = [PackageWidget(title: "Wedding", color: const Color.fromARGB(
       255, 52, 205, 196)),
-    PackageWidget(title: "Occasion", color: Color.fromARGB(
+    PackageWidget(title: "Occasion", color: const Color.fromARGB(
         255, 52, 168, 205)),
-    PackageWidget(title: "Party", color: Color.fromARGB(
-        255, 52, 132, 205)),PackageWidget(title: "Vaccation", color: Color.fromARGB(
+    PackageWidget(title: "Party", color: const Color.fromARGB(
+        255, 52, 132, 205)),PackageWidget(title: "Vaccation", color: const Color.fromARGB(
         255, 205, 181, 52))
   ];
 
@@ -39,8 +39,8 @@ class HomeTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            margin: EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
             child: SizedBox(
               height: 60,
               child: Card(
@@ -50,7 +50,7 @@ class HomeTab extends StatelessWidget {
                 elevation: 4,
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.search,
                         color: Colors.grey,
                       ),
@@ -74,16 +74,16 @@ class HomeTab extends StatelessWidget {
               itemCount: adWidgest.length,
             ),
           ),
-          SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.only(left:8.0),
+          const SizedBox(height: 20,),
+          const Padding(
+            padding: EdgeInsets.only(left:8.0),
             child: Text("Packages", style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Colors.black54
             ),),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           Container(
             height: 40,
             //margin: EdgeInsets.symmetric(horizontal: 10),
@@ -95,22 +95,22 @@ class HomeTab extends StatelessWidget {
               itemCount: packages.length,
             ),
           ),
-          SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.only(left:8.0),
+          const SizedBox(height: 20,),
+          const Padding(
+            padding: EdgeInsets.only(left:8.0),
             child: Text("Services", style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Colors.black54
             ),),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           Container(
             height: 200,
             //margin: EdgeInsets.symmetric(horizontal: 10),
             child: GridView.builder(
               itemCount: services.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 childAspectRatio: 1.0,
               ),
@@ -122,16 +122,16 @@ class HomeTab extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.only(left:8.0),
+          const SizedBox(height: 20,),
+          const Padding(
+            padding: EdgeInsets.only(left:8.0),
             child: Text("Recommended", style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 color: Colors.black54
             ),),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
           Container(
             height: 150,
             //margin: EdgeInsets.symmetric(horizontal: 10),
