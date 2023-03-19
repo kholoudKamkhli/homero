@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homero/database/user_database.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
-import 'package:homero/screens/sign_up/sign_un_view_model.dart';
+import 'package:homero/auth_controllers/sign_un_view_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../home_screen/home_screen_view.dart';

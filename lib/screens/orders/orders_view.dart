@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homero/screens/orders/order_details_view.dart';
-import 'package:homero/screens/orders/orders_tab_widget.dart';
+import 'package:homero/screens/orders/widgets/order_details_view.dart';
+import 'package:homero/screens/orders/widgets/orders_tab_widget.dart';
 
-import 'order_widget.dart';
+import 'widgets/order_widget.dart';
 
 class OrdersView extends StatelessWidget {
   List<OrderWidget>orders = [OrderWidget(name: "All"),OrderWidget(name: "Scheduled"),OrderWidget(name: "Finished"),];

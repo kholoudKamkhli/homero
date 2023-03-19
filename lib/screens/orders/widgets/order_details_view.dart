@@ -44,7 +44,7 @@ class OrderDetailsView extends StatelessWidget {
                   ),
                   SizedBox(height: 10,),
                   Row(
-                    children: [
+                    children: const [
                       Text(
                         "Time ",style: TextStyle(
                         color: Color.fromARGB(255, 84, 84, 84),
@@ -63,7 +63,7 @@ class OrderDetailsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 5,),
                   Row(
-                    children: [
+                    children: const [
                       Text(
                         "Date ",style: TextStyle(
                         color: Color.fromARGB(255, 84, 84, 84),
@@ -80,9 +80,9 @@ class OrderDetailsView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(
-                    children: [
+                    children: const [
                       Icon(Icons.location_on_outlined,size: 15,color: Color.fromARGB(
                           255, 84, 84, 84),),
                       Text("Andria Russell.414- 73354",style: TextStyle(

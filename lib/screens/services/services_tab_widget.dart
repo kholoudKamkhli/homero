@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/services/service_tab_widget.dart';
 
-import '../home_tab_screen/service_widget.dart';
+import '../home_tab_screen/widgets/service_widget.dart';
 
 class ServiceTabsWidget extends StatefulWidget {
   List<ServiceWidget> services;

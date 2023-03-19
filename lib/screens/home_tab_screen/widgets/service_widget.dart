@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homero/screens/home_tab_screen/service_elements.dart';
+import 'package:homero/screens/home_tab_screen/widgets/service_elements.dart';
 
 class ServiceWidget extends StatelessWidget {
   Image imagePath;

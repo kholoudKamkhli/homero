@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'ad_widget.dart';
-import 'package_widget.dart';
-import 'recommended_widget.dart';
-import 'service_widget.dart';
+import 'widgets/ad_widget.dart';
+import 'widgets/package_widget.dart';
+import 'widgets/recommended_widget.dart';
+import 'widgets/service_widget.dart';
 
 class HomeTab extends StatelessWidget {
   List<AdWidget> adWidgest = [AdWidget(), AdWidget(), AdWidget()];

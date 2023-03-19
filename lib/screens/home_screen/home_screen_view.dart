@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:homero/screens/home_tab_screen/ad_widget.dart';
-import 'package:homero/screens/home_tab_screen/package_widget.dart';
-import 'package:homero/screens/home_tab_screen/recommended_widget.dart';
-import 'package:homero/screens/home_tab_screen/service_widget.dart';
+import 'package:homero/screens/home_tab_screen/widgets/ad_widget.dart';
+import 'package:homero/screens/home_tab_screen/widgets/package_widget.dart';
+import 'package:homero/screens/home_tab_screen/widgets/recommended_widget.dart';
+import 'package:homero/screens/home_tab_screen/widgets/service_widget.dart';
 import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/profile/profile_view.dart';
 import 'package:homero/screens/services/services_view.dart';

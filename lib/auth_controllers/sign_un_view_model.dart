@@ -1,14 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:homero/screens/sign_in/sign_in_view.dart';
 
-import '../../database/user_database.dart';
-import '../../models/user_model.dart';
-import '../home_screen/home_screen_view.dart';
+import '../database/user_database.dart';
+import '../models/user_model.dart';
 
-class SignInViewModel {
+class SignUpViewModel {
   static Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -32,7 +29,6 @@ class SignInViewModel {
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
-
   static Future<UserCredential> signInWithFacebook() async {
     // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login();
@@ -50,24 +46,5 @@ class SignInViewModel {
     }
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  }
-  static signInWithEmailAndPassword(String mail,String password,BuildContext context)async {
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: mail,
-          password: password
-      );
-      //MyUser? user = await UserDatabase.getUser(credential.user?.uid ?? "");
-
-      Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
-      return;
-
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/services/services_tab_widget.dart';
 
-import '../home_tab_screen/service_elements.dart';
-import '../home_tab_screen/service_widget.dart';
+import '../home_tab_screen/widgets/service_elements.dart';
+import '../home_tab_screen/widgets/service_widget.dart';
 
 class ServicesView extends StatelessWidget {
   int selectedIndex = 0;
