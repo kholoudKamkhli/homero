@@ -15,16 +15,6 @@ class UserDatabase {
   static Future<void> addUserToDatabase(MyUser user) {
     return getUsersCollection().doc(user.id).set(user);
   }
-
-  // static check(String id) {
-  //   var userRef = getUsersCollection().doc(id);
-  //   userRef.get().then((doc) {
-  //     if (doc.exists)
-  //       return true;
-  //     else
-  //       return false;
-  //   });
-  // }
   static Future<bool> check(String id) async {
     if(id.isEmpty){return false;}
     var userRef = getUsersCollection().doc(id);

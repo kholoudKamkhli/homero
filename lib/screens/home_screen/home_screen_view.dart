@@ -61,7 +61,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
         ),),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
-          onPressed: () => Navigator.pushNamed(context, HomeScreenView.routeName),
+          onPressed: () => Navigator.pushReplacementNamed(context, HomeScreenView.routeName),
         ),
         elevation: 0,
 
@@ -104,6 +104,6 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       body: tabs[selectedIndex],
     );
   }
-  List<Widget> tabs = [ProfileView(),const OrdersView(),HomeTab(),ServicesView(),SettingsView()];
+  List<Widget> tabs = [ProfileView(), OrdersView(),HomeTab(),ServicesView(),SettingsView()];
   List<String>names = ["Profile","Orders","","Services","Settings"];
 }

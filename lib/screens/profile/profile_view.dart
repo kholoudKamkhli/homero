@@ -7,6 +7,8 @@ import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+
+import 'edit_profile.dart';
 class ProfileView extends StatefulWidget {
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -31,26 +33,6 @@ class _ProfileViewState extends State<ProfileView> {
   }
   final ImagePicker _picker = ImagePicker();
   XFile? _image ;
-  Future getImage()async{
-    var image = await _picker.pickImage(source: ImageSource.gallery);
-    _image = image;
-    print(_image?.path??"null path");
-    if(_image!=null){
-      Reference referenceRoot = FirebaseStorage.instance.ref();
-      Reference referenceImages = referenceRoot.child('images');
-      Reference referenceImageToUpload = referenceImages.child(_image!.path);
-      try{
-        await referenceImageToUpload.putFile(File(_image!.path));
-        String imageUrl = await referenceImageToUpload.getDownloadURL();
-        user!.imageUrl = imageUrl;
-        await UserDatabase.updateImage(user!, imageUrl);
-
-      }catch(error){
-      }
-    }
-    setState((){
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return user==null?Center(child: CircularProgressIndicator(),):Scaffold(
@@ -61,20 +43,14 @@ class _ProfileViewState extends State<ProfileView> {
           Container(
             alignment: Alignment.center,
             height: 100,
-            child: InkWell(
-              onTap: ()async{
-                getImage();
-              },
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.transparent,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child:user!.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user!.imageUrl),
-                     // user.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user.imageUrl)),
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.transparent,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child:user!.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user!.imageUrl),
 
-                ))
-              ),
+              )),
             ),
           const SizedBox(
             height: 20,
@@ -89,12 +65,17 @@ class _ProfileViewState extends State<ProfileView> {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            "Edit Profile",
-            style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Color.fromARGB(255, 126, 127, 131),
-                fontSize: 16),
+          InkWell(
+            onTap: (){
+              Navigator.pushNamed(context, EditProfile.routeName);
+            },
+            child: const Text(
+              "Edit Profile",
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: Color.fromARGB(255, 126, 127, 131),
+                  fontSize: 16),
+            ),
           ),
           const SizedBox(
             height: 25,

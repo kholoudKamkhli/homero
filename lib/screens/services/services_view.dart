@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:homero/screens/services/services_tab_widget.dart';
 
+import '../home_tab_screen/service_elements.dart';
 import '../home_tab_screen/service_widget.dart';
 
 class ServicesView extends StatelessWidget {
@@ -36,11 +38,36 @@ class ServicesView extends StatelessWidget {
               ),
             ),
           ),
+          ServiceTabsWidget(services: services,),
+          const SizedBox(height: 20,),
+          Container(
+            height: 200,
+            //margin: EdgeInsets.symmetric(horizontal: 10),
+            child: GridView.builder(
+              itemCount: serviceElemets.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 1.0,
+              ),
+              itemBuilder: (context, index) {
+                return ServiceWidget(
+                  imagePath: serviceElemets[index].image,
+                  title: serviceElemets[index].name,
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
+  List<ServiceElements> serviceElemets = [
+    ServiceElements(name: "Cleaning", image: Image.asset("assets/images/img_5.png")),
+    ServiceElements(name: "Deep", image: Image.asset("assets/images/img_5.png")),
+    ServiceElements(name: "Normal", image: Image.asset("assets/images/img_5.png")),
+    ServiceElements(name: "premium", image: Image.asset("assets/images/img_5.png")),
 
+  ];
   List<ServiceWidget> services = [
     ServiceWidget(
         title: "Cleaning", imagePath: Image.asset("assets/images/img_6.png")),
@@ -62,14 +89,6 @@ class ServicesView extends StatelessWidget {
         title: "Re-Organize",
         imagePath: Image.asset("assets/images/img_11.png")),
   ];
-  List<String> servicesNames = [
-    "Cleaning",
-    "Cooking",
-    "Cleaning",
-    "Repairs",
-    "Re-Organize",
-    "Baby Sitter",
-    "Beauty",
-    "Re-Organize"
-  ];
+
+
 }

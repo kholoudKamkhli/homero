@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:homero/bases/BaseSign.dart';
 import 'package:homero/database/user_database.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
@@ -373,7 +372,7 @@ class _SignUpViewState extends State<SignUpView> {
                       IconButton(
                           onPressed: () async {
                             try {
-                              await signInWithFacebook();
+                              await SignUpViewModel.signInWithFacebook();
                               if (FirebaseAuth.instance.currentUser != null) {
                                 Navigator.pushReplacementNamed(
                                     context, HomeScreenView.routeName);
@@ -387,7 +386,7 @@ class _SignUpViewState extends State<SignUpView> {
                       IconButton(
                           onPressed: () async {
                             try {
-                              await signInWithGoogle();
+                              await SignUpViewModel.signInWithGoogle();
                               if (FirebaseAuth.instance.currentUser != null) {
                                 Navigator.pushReplacementNamed(
                                     context, HomeScreenView.routeName);
@@ -437,49 +436,4 @@ class _SignUpViewState extends State<SignUpView> {
       sinInWithPhone();
     }
   }
-
-  static Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
-    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"",imageUrl: FirebaseAuth.instance.currentUser?.photoURL??"");
-    UserDatabase.addUserToDatabase(user);
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  static Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-    FacebookAuthProvider.credential(loginResult.accessToken!.token);
-    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
-    MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
-    if(user.imageUrl==""){
-      user.imageUrl = FirebaseAuth.instance.currentUser?.photoURL??"";
-    }
-    UserDatabase.addUserToDatabase(user);
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  }
-
-
-// void navigate(String verificationId) {
-//   Navigator.of(context).push(PageRouteBuilder(
-//       pageBuilder: (_, __, ___) =>
-//           OTPVerificstion(verificationId: verificationId)));
-// }
 }
