@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:homero/database/user_database.dart';
-import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
-import 'package:homero/auth_controllers/sign_un_view_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
+import '../../controllers/auth_controllers/sign_up_controller/sign_un_view_model.dart';
+import '../../controllers/auth_controllers/sign_up_controller/sign_up_connector.dart';
+import '../../controllers/base_classes/base.dart';
 import '../home_screen/home_screen_view.dart';
-
 class SignUpView extends StatefulWidget {
   static const String routeName = "SignUp";
 
@@ -17,7 +13,7 @@ class SignUpView extends StatefulWidget {
   State<SignUpView> createState() => _SignUpViewState();
 }
 
-class _SignUpViewState extends State<SignUpView> {
+class _SignUpViewState extends BaseView<SignUpViewModel,SignUpView>implements SignUpConnector {
   late var viewModel;
   var formKey = GlobalKey<FormState>();
   var emailCont = TextEditingController();
@@ -35,6 +31,7 @@ class _SignUpViewState extends State<SignUpView> {
     // TODO: implement initState
     super.initState();
     viewModel = SignUpViewModel();
+    viewModel.connector = this;
   }
 
   @override
@@ -372,7 +369,7 @@ class _SignUpViewState extends State<SignUpView> {
                       IconButton(
                           onPressed: () async {
                             try {
-                              await SignUpViewModel.signInWithFacebook();
+                              await viewModel.signInWithFacebook();
                               if (FirebaseAuth.instance.currentUser != null) {
                                 Navigator.pushReplacementNamed(
                                     context, HomeScreenView.routeName);
@@ -386,7 +383,7 @@ class _SignUpViewState extends State<SignUpView> {
                       IconButton(
                           onPressed: () async {
                             try {
-                              await SignUpViewModel.signInWithGoogle();
+                              await viewModel.signInWithGoogle();
                               if (FirebaseAuth.instance.currentUser != null) {
                                 Navigator.pushReplacementNamed(
                                     context, HomeScreenView.routeName);
@@ -435,5 +432,15 @@ class _SignUpViewState extends State<SignUpView> {
     if (formKey.currentState!.validate()) {
       sinInWithPhone();
     }
+  }
+
+  @override
+  goToHome() {
+    Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+  }
+
+  @override
+  SignUpViewModel initViewModel() {
+    return SignUpViewModel();
   }
 }

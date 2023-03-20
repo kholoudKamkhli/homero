@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
-import 'package:homero/auth_controllers/sign_in_view_model.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
 import 'package:provider/provider.dart';
 
+import '../../controllers/auth_controllers/sign_in_controller/sign_in_connector.dart';
+import '../../controllers/auth_controllers/sign_in_controller/sign_in_view_model.dart';
+import '../../controllers/base_classes/base.dart';
 import '../../database/user_database.dart';
 import '../../models/user_model.dart';
 
@@ -16,7 +18,7 @@ class SignInView extends StatefulWidget {
   State<SignInView> createState() => _SignInViewState();
 }
 
-class _SignInViewState extends State<SignInView> {
+class _SignInViewState extends BaseView<SignInViewModel,SignInView>implements SignInConnector {
  // late dynamic viewModel;
   FocusNode passwordFocus = FocusNode();
   FocusNode emailFocus = FocusNode();
@@ -31,7 +33,8 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   void initState() {
-    //viewModel = SignInViewModel();
+    viewModel = initViewModel();
+    viewModel.connector = this;
     // TODO: implement initState
     super.initState();
     emailFocus.addListener(() {
@@ -265,7 +268,7 @@ class _SignInViewState extends State<SignInView> {
                               IconButton(
                                   onPressed: ()async {
                                     try{
-                                      await SignInViewModel.signInWithFacebook();
+                                      await viewModel.signInWithFacebook();
                                       if(FirebaseAuth.instance.currentUser!=null){
                                         Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
                                       }
@@ -278,7 +281,7 @@ class _SignInViewState extends State<SignInView> {
                               IconButton(
                                   onPressed: () async{
                                     try{
-                                      await SignInViewModel.signInWithGoogle();
+                                      await viewModel.signInWithGoogle();
                                       if(FirebaseAuth.instance.currentUser!=null){
                                         Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
                                       }
@@ -332,24 +335,15 @@ class _SignInViewState extends State<SignInView> {
 
   void validateForm() async{
     if(formKey.currentState!.validate()){
-      // try {
-      //   final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-      //       email: emailCont.text,
-      //       password: passwordCont.text
-      //   );
-      //   //MyUser? user = await UserDatabase.getUser(credential.user?.uid ?? "");
-      //
-      //     Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
-      //     return;
-      //
-      // } on FirebaseAuthException catch (e) {
-      //   if (e.code == 'user-not-found') {
-      //     print('No user found for that email.');
-      //   } else if (e.code == 'wrong-password') {
-      //     print('Wrong password provided for that user.');
-      //   }
-      // }
-      SignInViewModel.signInWithEmailAndPassword(emailCont.text, passwordCont.text, context);
+      viewModel.signInWithEmailAndPassword(emailCont.text, passwordCont.text, context);
     }
+  }
+  @override
+  SignInViewModel initViewModel() {
+    return SignInViewModel();
+  }
+  @override
+  navigateToHome() {
+    Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
   }
 }

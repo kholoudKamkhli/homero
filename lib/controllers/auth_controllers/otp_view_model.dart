@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homero/models/user_model.dart';
 
-import '../database/user_database.dart';
-import '../models/user_model.dart';
-import '../screens/home_screen/home_screen_view.dart';
+import '../../database/user_database.dart';
+import '../../screens/home_screen/home_screen_view.dart';
+
+
 
 class OTPViewModel extends ChangeNotifier{
    static FirebaseAuth auth = FirebaseAuth.instance;
