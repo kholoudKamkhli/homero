@@ -31,4 +31,7 @@ class UserDatabase {
     var myUser = user.data();
     return myUser;
   }
+  static editUser(MyUser user) async {
+    var doc = await getUsersCollection().doc(user.id).set(user);
+  }
 }

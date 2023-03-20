@@ -7,6 +7,7 @@ import 'package:homero/screens/profile/edit_profile.dart';
 import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
 import 'package:homero/screens/spalsh_screens/splash_screen1.dart';
+import 'package:homero/screens/workers/worker_view.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         SignUpView.routeName:(_)=>SignUpView(),
         //OTPVerificstion.routeName:(_)=>OTPVerificstion(verificationId: verificationId)
         EditProfile.routeName:(_)=>EditProfile(),
+        WorkerView.routeName:(_)=>WorkerView(),
 
       } ,
       initialRoute: SplashScreenOne.routeName,

@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:homero/controllers/user_location_controller.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../database/user_database.dart';
-
+import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
 class EditProfile extends StatefulWidget {
   static const String routeName = "editProfile";
 
@@ -14,6 +16,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  UserLocationController locationController = UserLocationController();
   var usernameCont = TextEditingController();
   var mailCont = TextEditingController();
   var phoneNumCont = TextEditingController();
@@ -25,11 +28,14 @@ class _EditProfileState extends State<EditProfile> {
   FocusNode phoneFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
   FocusNode locationFocus = FocusNode();
+  var formKey = GlobalKey<FormState>();
   var color = Colors.transparent;
   var hintColor = Colors.white;
+
   //var color2 = Colors.transparent;
   //var hintColor2 = Colors.white;
   bool enabled = true;
+
   Future<void> initUser() async {
     print(FirebaseAuth.instance.currentUser!.uid);
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
@@ -38,11 +44,12 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
+    locationController.requestService();
+    locationController.requestPermession();
     // TODO: implement initState
     super.initState();
     initUser();
-    usernameFocus.addListener(() {
-    });
+    usernameFocus.addListener(() {});
   }
 
   final ImagePicker _picker = ImagePicker();
@@ -69,12 +76,17 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Edit Profile",style: TextStyle(
-          color: Color.fromARGB(255, 84, 84, 84),
-        ),),
+        title: Text(
+          "Edit Profile",
+          style: TextStyle(
+            color: Color.fromARGB(255, 84, 84, 84),
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
+          icon: const Icon(Icons.arrow_back,
+              color: Color.fromARGB(255, 84, 84, 84)),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.transparent,
@@ -85,246 +97,378 @@ class _EditProfileState extends State<EditProfile> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                   SizedBox(height: 30,),
-                  Container(
-                    alignment: Alignment.center,
-                    child: InkWell(
-                      onTap: () {
-                        getImage();
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.transparent,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: user!.imageUrl == ""
-                                  ? Image.asset(
-                                      "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg")
-                                  : Image.network(
-                                      user!.imageUrl,
-                                    ),
+          : Form(
+              key: formKey,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          getImage();
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.transparent,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: user!.imageUrl == ""
+                                    ? Image.asset(
+                                        "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg")
+                                    : Image.network(
+                                        user!.imageUrl,
+                                      ),
+                              ),
                             ),
+                            Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Image.asset(
+                                  "assets/images/img_33.png",
+                                  height: 32,
+                                  width: 32,
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "Click for edit",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 44,
+                      child: TextFormField(
+                        onTap: (){},
+                        onEditingComplete: () {
+                          if (usernameCont.text != null &&
+                              usernameCont.text != "") {
+                            user!.username = usernameCont.text;
+                            UserDatabase.editUser(user!);
+                          }
+                        },
+                        // onSaved: (value){
+                        //   print(value);
+                        //
+                        // },
+                        controller: usernameCont,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter valid name";
+                          } else {
+                            return null;
+                          }
+                        },
+                        focusNode: usernameFocus,
+                        decoration: InputDecoration(
+                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                          suffixIcon: Icon(
+                            Icons.person_outline_outlined,
+                            size: 15,
+                            color: Colors.grey,
                           ),
-                          Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Image.asset(
-                                "assets/images/img_33.png",
-                                height: 32,
-                                width: 32,
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    child: const Text(
-                      "Click for edit",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 126, 127, 131),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20,),
-                  SizedBox(
-                    height: 44,
-                    child: TextFormField(
-                      // onEditingComplete: (){
-                      //   user!.username = usernameCont.text;
-                      // },
-                      // onSaved: (value){
-                      //   if(value!=null&&value.isNotEmpty){
-                      //     user!.username = value;
-                      //   }
-                      //
-                      // },
-                      controller: usernameCont,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter valid name";
-                        } else {
-                          return null;
-                        }
-                      },
-                      focusNode: usernameFocus,
-                      decoration: InputDecoration(
-                        //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                        suffixIcon: Icon(Icons.person_outline_outlined,size: 15,color: Colors.grey,),
-                        focusColor: Colors.transparent,
-                        hintText: user!.username,
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                        labelText: "Full Name ",
-                        labelStyle: TextStyle(
-                          color:usernameFocus.hasFocus?Colors.tealAccent:Colors.grey
-                        ),
-                        filled: true,
-                        enabled: true,
-                        fillColor: usernameFocus.hasFocus?Colors.transparent:Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          BorderSide(color: usernameFocus.hasFocus?Colors.tealAccent:Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                           BorderSide(color: Colors.tealAccent),
+                          focusColor: Colors.transparent,
+                          hintText: user!.username,
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          labelText: "Full Name ",
+                          labelStyle: TextStyle(
+                              color: usernameFocus.hasFocus
+                                  ? Colors.tealAccent
+                                  : Colors.grey),
+                          filled: true,
+                          enabled: true,
+                          fillColor: usernameFocus.hasFocus
+                              ? Colors.transparent
+                              : Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: usernameFocus.hasFocus
+                                    ? Colors.tealAccent
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20,),
-                  SizedBox(
-                    height: 44,
-                    child: TextFormField(
-                      controller: mailCont,
-                      validator: (value) {
-                        if (value != null &&
-                            value.isNotEmpty &&
-                            RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                .hasMatch(value)) {
-                          return null;
-                        } else {
-                          return "Please enter valid Email";
-                        }
-                      },
-                      focusNode: mailFocus,
-                      decoration: InputDecoration(
-                        //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                        suffixIcon: Icon(Icons.email_outlined,size: 15,color: Colors.grey,),
-                        focusColor: Colors.transparent,
-                        hintText: user!.email,
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                        labelText: "Email",
-                        labelStyle: TextStyle(
-                            color:usernameFocus.hasFocus?Colors.tealAccent:Colors.grey
-                        ),
-                        filled: true,
-                        enabled: true,
-                        fillColor: usernameFocus.hasFocus?Colors.transparent:Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          BorderSide(color: usernameFocus.hasFocus?Colors.tealAccent:Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                          BorderSide(color: Colors.tealAccent),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 44,
+                      child: TextFormField(
+                        onEditingComplete: () {
+                          if (mailCont.text != null && mailCont.text != "") {
+                            user!.email = mailCont.text;
+                            UserDatabase.editUser(user!);
+                          }
+                        },
+                        controller: mailCont,
+                        validator: (value) {
+                          if (value != null &&
+                              value.isNotEmpty &&
+                              RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value)) {
+                            return null;
+                          } else {
+                            return "Please enter valid Email";
+                          }
+                        },
+                        focusNode: mailFocus,
+                        decoration: InputDecoration(
+                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                          suffixIcon: Icon(
+                            Icons.email_outlined,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                          focusColor: Colors.transparent,
+                          hintText: user!.email,
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                              color: mailFocus.hasFocus
+                                  ? Colors.tealAccent
+                                  : Colors.grey),
+                          filled: true,
+                          enabled: true,
+                          fillColor: mailFocus.hasFocus
+                              ? Colors.transparent
+                              : Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: mailFocus.hasFocus
+                                    ? Colors.tealAccent
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20,),
-                  SizedBox(
-                    height: 44,
-                    child: TextFormField(
-                      controller: phoneNumCont,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter phone number";
-                        } else {
-                          return null;
-                        }
-                      },
-                      focusNode: phoneFocus,
-                      decoration: InputDecoration(
-                        //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                        suffixIcon: Icon(Icons.phone_outlined,size: 15,color: Colors.grey,),
-                        focusColor: Colors.transparent,
-                        hintText: user!.phoneNum??"",
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
-                        labelText: "Phone Number",
-                        labelStyle: TextStyle(
-                            color:usernameFocus.hasFocus?Colors.tealAccent:Colors.grey
-                        ),
-                        filled: true,
-                        enabled: true,
-                        fillColor: usernameFocus.hasFocus?Colors.transparent:Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          BorderSide(color: usernameFocus.hasFocus?Colors.tealAccent:Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                          BorderSide(color: Colors.tealAccent),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 44,
+                      child: TextFormField(
+                        onEditingComplete: () {
+                          if (phoneNumCont.text != null &&
+                              phoneNumCont.text != "") {
+                            user!.phoneNum = phoneNumCont.text;
+                            UserDatabase.editUser(user!);
+                          }
+                        },
+                        controller: phoneNumCont,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter phone number";
+                          } else {
+                            return null;
+                          }
+                        },
+                        focusNode: phoneFocus,
+                        decoration: InputDecoration(
+                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                          suffixIcon: Icon(
+                            Icons.phone_outlined,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                          focusColor: Colors.transparent,
+                          hintText: user!.phoneNum ?? "",
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                          labelText: "Phone Number",
+                          labelStyle: TextStyle(
+                              color: phoneFocus.hasFocus
+                                  ? Colors.tealAccent
+                                  : Colors.grey),
+                          filled: true,
+                          enabled: true,
+                          fillColor: phoneFocus.hasFocus
+                              ? Colors.transparent
+                              : Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: phoneFocus.hasFocus
+                                    ? Colors.tealAccent
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20,),
-                  SizedBox(
-                    height: 44,
-                    child: TextFormField(
-                      controller: passwordCont,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter valid name";
-                        } else {
-                          return null;
-                        }
-                      },
-                      focusNode: passwordFocus,
-                      obscureText: true,
-                      obscuringCharacter: ".",
-                      decoration: InputDecoration(
-                        //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                        suffixIcon: Icon(Icons.lock_outline,size: 15,color: Colors.grey,),
-                        focusColor: Colors.transparent,
-                        hintText: ".......",
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 18,
-                        ),
-                        labelText: "Password",
-                        labelStyle: TextStyle(
-                            color:usernameFocus.hasFocus?Colors.tealAccent:Colors.grey
-                        ),
-                        filled: true,
-                        enabled: true,
-                        fillColor: usernameFocus.hasFocus?Colors.transparent:Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          BorderSide(color: usernameFocus.hasFocus?Colors.tealAccent:Colors.white),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                          BorderSide(color: Colors.tealAccent),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 44,
+                      child: TextFormField(
+                        controller: passwordCont,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter valid name";
+                          } else {
+                            return null;
+                          }
+                        },
+                        focusNode: passwordFocus,
+                        obscureText: true,
+                        obscuringCharacter: ".",
+                        decoration: InputDecoration(
+                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                          suffixIcon: Icon(
+                            Icons.lock_outline,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                          focusColor: Colors.transparent,
+                          hintText: ".......",
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          ),
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                              color: passwordFocus.hasFocus
+                                  ? Colors.tealAccent
+                                  : Colors.grey),
+                          filled: true,
+                          enabled: true,
+                          fillColor: passwordFocus.hasFocus
+                              ? Colors.transparent
+                              : Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: passwordFocus.hasFocus
+                                    ? Colors.tealAccent
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 44,
+                      child: TextFormField(
+                        onTap: ()async{
+                          var locationData = await getUserLocation();
+                           locationCont.text = locationData??"";
+                        },
+                        controller: locationCont,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter valid name";
+                          } else {
+                            return null;
+                          }
+                        },
+                        focusNode: locationFocus,
+                        decoration: InputDecoration(
+                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                          suffixIcon: Icon(
+                            Icons.lock_outline,
+                            size: 15,
+                            color: Colors.grey,
+                          ),
+                          focusColor: Colors.transparent,
+                          hintText: "location",
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          ),
+                          labelText: "Location",
+                          labelStyle: TextStyle(
+                              color: locationFocus.hasFocus
+                                  ? Colors.tealAccent
+                                  : Colors.grey),
+                          filled: true,
+                          enabled: true,
+                          fillColor: locationFocus.hasFocus
+                              ? Colors.transparent
+                              : Colors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: locationFocus.hasFocus
+                                    ? Colors.tealAccent
+                                    : Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
               ),
             ),
     );
+  }
+  Future<String?> getUserLocation()async{
+    bool isServiceEnabled =await locationController.requestService();
+    bool isPermessionGranted = await locationController.requestPermession();
+    if(isServiceEnabled&&isPermessionGranted){
+      var locationData = await locationController.getLocation();
+      final coordinates = new Coordinates(
+          locationData!.latitude, locationData!.longitude);
+      var addresses = await Geocoder.local.findAddressesFromCoordinates(
+          coordinates);
+      var first = addresses.first;
+      var finalAddress = ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}';
+      return finalAddress;
+    }
   }
 }
