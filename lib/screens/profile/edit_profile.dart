@@ -3,11 +3,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/controllers/user_location_controller.dart';
 import 'package:homero/models/user_model.dart';
+import 'package:homero/shared/dialog_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../database/user_database.dart';
 import 'package:location/location.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:flutter_geocoder/geocoder.dart';
 class EditProfile extends StatefulWidget {
   static const String routeName = "editProfile";
 
@@ -343,54 +344,93 @@ class _EditProfileState extends State<EditProfile> {
                     SizedBox(
                       height: 20,
                     ),
-                    SizedBox(
-                      height: 44,
-                      child: TextFormField(
-                        controller: passwordCont,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter valid name";
-                          } else {
-                            return null;
+                    // SizedBox(
+                    //   height: 44,
+                    //   child: TextFormField(
+                    //     controller: passwordCont,
+                    //     validator: (value) {
+                    //       if (value == null || value.isEmpty) {
+                    //         return "Please enter valid name";
+                    //       } else {
+                    //         return null;
+                    //       }
+                    //     },
+                    //     focusNode: passwordFocus,
+                    //     obscureText: true,
+                    //     obscuringCharacter: ".",
+                    //     decoration: InputDecoration(
+                    //       //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
+                    //       suffixIcon: Icon(
+                    //         Icons.lock_outline,
+                    //         size: 15,
+                    //         color: Colors.grey,
+                    //       ),
+                    //       focusColor: Colors.transparent,
+                    //       hintText: ".......",
+                    //       hintStyle: TextStyle(
+                    //         color: Colors.grey,
+                    //         fontSize: 18,
+                    //       ),
+                    //       labelText: "Password",
+                    //       labelStyle: TextStyle(
+                    //           color: passwordFocus.hasFocus
+                    //               ? Colors.tealAccent
+                    //               : Colors.grey),
+                    //       filled: true,
+                    //       enabled: true,
+                    //       fillColor: passwordFocus.hasFocus
+                    //           ? Colors.transparent
+                    //           : Colors.white,
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderSide: BorderSide(
+                    //             color: passwordFocus.hasFocus
+                    //                 ? Colors.tealAccent
+                    //                 : Colors.white),
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10),
+                    //         borderSide: BorderSide(color: Colors.tealAccent),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    InkWell(
+                      onTap: ()async{
+                          try{
+                            await FirebaseAuth.instance
+                                .sendPasswordResetEmail(email: user!.email);
+                            MyDialogUtils.showMessage(context, "A password reset mail has been sent tp your email please redirect there to continue resetting your password", "Ok");
                           }
-                        },
-                        focusNode: passwordFocus,
-                        obscureText: true,
-                        obscuringCharacter: ".",
-                        decoration: InputDecoration(
-                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                          suffixIcon: Icon(
-                            Icons.lock_outline,
-                            size: 15,
-                            color: Colors.grey,
-                          ),
-                          focusColor: Colors.transparent,
-                          hintText: ".......",
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 18,
-                          ),
-                          labelText: "Password",
-                          labelStyle: TextStyle(
-                              color: passwordFocus.hasFocus
-                                  ? Colors.tealAccent
-                                  : Colors.grey),
-                          filled: true,
-                          enabled: true,
-                          fillColor: passwordFocus.hasFocus
-                              ? Colors.transparent
-                              : Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: passwordFocus.hasFocus
-                                    ? Colors.tealAccent
-                                    : Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                          catch(e){
+
+                          }
+
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 44,
+                          width: 344,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0,bottom: 8),
+                              child: Text(".............",style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                              ),),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.lock_outline,color: Colors.grey,size:15 ,),
+                            )
+                          ],
                         ),
                       ),
                     ),
@@ -400,14 +440,24 @@ class _EditProfileState extends State<EditProfile> {
                     SizedBox(
                       height: 44,
                       child: TextFormField(
+                        onEditingComplete: () {
+                          if (locationCont.text != null &&
+                              locationCont.text != "") {
+                            user!.address = locationCont.text;
+                            UserDatabase.editUser(user!);
+                          }
+                        },
+                        style: TextStyle(
+                          fontSize: 8,
+                        ),
                         onTap: ()async{
-                          var locationData = await getUserLocation();
-                           locationCont.text = locationData??"";
+                          var first = await getUserLocation();
+                           locationCont.text = first?.addressLine?.toString()??"";
                         },
                         controller: locationCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Please enter valid name";
+                            return "Please enter valid location";
                           } else {
                             return null;
                           }
@@ -416,7 +466,7 @@ class _EditProfileState extends State<EditProfile> {
                         decoration: InputDecoration(
                           //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
                           suffixIcon: Icon(
-                            Icons.lock_outline,
+                            Icons.location_on_outlined,
                             size: 15,
                             color: Colors.grey,
                           ),
@@ -457,18 +507,15 @@ class _EditProfileState extends State<EditProfile> {
             ),
     );
   }
-  Future<String?> getUserLocation()async{
+  Future<Address?> getUserLocation()async{
     bool isServiceEnabled =await locationController.requestService();
     bool isPermessionGranted = await locationController.requestPermession();
     if(isServiceEnabled&&isPermessionGranted){
       var locationData = await locationController.getLocation();
-      final coordinates = new Coordinates(
-          locationData!.latitude, locationData!.longitude);
-      var addresses = await Geocoder.local.findAddressesFromCoordinates(
-          coordinates);
-      var first = addresses.first;
-      var finalAddress = ' ${first.locality}, ${first.adminArea},${first.subLocality}, ${first.subAdminArea},${first.addressLine}, ${first.featureName},${first.thoroughfare}, ${first.subThoroughfare}';
-      return finalAddress;
+      final coordinates = new Coordinates(locationData?.latitude, locationData?.longitude);
+      var address = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var first = address.first;
+      return first;
     }
   }
 }

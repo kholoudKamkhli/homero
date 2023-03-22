@@ -1,5 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:homero/controllers/payment/payment_view_model.dart';
+import 'package:homero/screens/payment/payment_view.dart';
 import 'package:homero/screens/workers/worker_widget.dart';
+import 'package:http/http.dart' as http;
 
 class WorkerView extends StatefulWidget {
   static const String routeName = "Worker";
@@ -98,7 +105,7 @@ class _WorkerViewState extends State<WorkerView> {
               // },
               onTap: (){
                 if(buttonClicked == true){
-
+                   Navigator.pushNamed(context, PaymentView.routeName);
                 }
               },
               child: Container(
@@ -136,8 +143,6 @@ class _WorkerViewState extends State<WorkerView> {
     setState(() {
 
     });
-    print("HI");
-    print(buttonClicked);
   }
   List<WorkerWidget> getWorkers(){
     return [
@@ -166,4 +171,5 @@ class _WorkerViewState extends State<WorkerView> {
       //WorkerWidget(image: Image.asset("assets/images/img_35.png"), name: "Aly Said", jobTitle: "Cleaning Expert", numOfDoneTasks: 4, numOfRatings: 12, rating: 4),
     ];
   }
+
 }
