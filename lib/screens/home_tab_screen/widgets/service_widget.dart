@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/home_tab_screen/widgets/service_elements.dart';
+import 'package:homero/screens/service_details/service_details_view.dart';
 
 import '../../workers/worker_view.dart';
 
@@ -21,7 +22,7 @@ class ServiceWidget extends StatelessWidget {
     
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, WorkerView.routeName);
+        Navigator.pushNamed(context, ServiceDetailsView.routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(

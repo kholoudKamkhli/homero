@@ -7,6 +7,7 @@ import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
 import 'package:homero/screens/payment/payment_view.dart';
 import 'package:homero/screens/profile/edit_profile.dart';
+import 'package:homero/screens/service_details/service_details_view.dart';
 import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
 import 'package:homero/screens/spalsh_screens/splash_screen1.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         EditProfile.routeName:(_)=>EditProfile(),
         WorkerView.routeName:(_)=>WorkerView(),
         PaymentView.routeName:(_)=>PaymentView(),
+        ServiceDetailsView.routeName:(_)=>ServiceDetailsView(),
 
       } ,
       initialRoute: SplashScreenOne.routeName,
