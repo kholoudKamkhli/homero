@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:homero/database/ad_database.dart';
+import 'package:homero/database/recommendation_database.dart';
+import 'package:homero/database/service_database.dart';
+import 'package:homero/models/ad_model.dart';
+import 'package:homero/models/reccomendation_model.dart';
+import 'package:homero/models/service_model.dart';
 
 import 'widgets/ad_widget.dart';
 import 'widgets/package_widget.dart';
 import 'widgets/recommended_widget.dart';
 import 'widgets/service_widget.dart';
 
-class HomeTab extends StatelessWidget {
-  List<AdWidget> adWidgest = [AdWidget(), AdWidget(), AdWidget()];
+class HomeTab extends StatefulWidget {
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  List<ServiceModel>services=[];
+
+  List<AdModel> ads = [];
+  List<RecommendationModel> recommends = [];
 
   List<PackageWidget> packages = [PackageWidget(title: "Wedding", color: const Color.fromARGB(
       255, 52, 205, 196)),
@@ -17,20 +31,25 @@ class HomeTab extends StatelessWidget {
         255, 205, 181, 52))
   ];
 
-  List<ServiceWidget> services = [ServiceWidget(title: "Cleaning", imagePath: Image.asset("assets/images/img_6.png")),
-    ServiceWidget(title: "Cooking", imagePath: Image.asset("assets/images/img_5.png")),
-    ServiceWidget(title: "Cleaning", imagePath: Image.asset("assets/images/img_6.png")),
-    ServiceWidget(title: "Repairs", imagePath: Image.asset("assets/images/img_7.png")),
-    ServiceWidget(title: "Re-Organize", imagePath: Image.asset("assets/images/img_8.png")),
-    ServiceWidget(title: "Baby Sitter", imagePath: Image.asset("assets/images/img_9.png")),
-    ServiceWidget(title: "Beauty", imagePath: Image.asset("assets/images/img_10.png")),
-    ServiceWidget(title: "Re-Organize", imagePath: Image.asset("assets/images/img_11.png")),
-  ];
-  List<RecommendedWidget> recommended = [RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service"),
-    RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service")
-    ,RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service")
-  ];
+  // List<RecommendedWidget> recommended = [RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service"),
+  //   RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service")
+  //   ,RecommendedWidget(path:Image.asset("assets/images/img_12.png"), username: "Sara", name: "HomeCleaning", latestReview: "Very good service")
+  // ];
+  initServices()async{
+    services = await ServiceDatabase.getMainServices();
+    ads = await AdDatabase.getAds();
+    recommends = await RecommendationDatabase.getRecommends();
+    setState(() {
 
+    });
+
+  }
+  @override
+  void initState(){
+    // TODO: implement initState
+    super.initState();
+      initServices();
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -69,9 +88,9 @@ class HomeTab extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemBuilder: (buildContext, index) {
-                return adWidgest[index];
+                return AdWidget(ad: ads[index]);
               },
-              itemCount: adWidgest.length,
+              itemCount: ads.length,
             ),
           ),
           const SizedBox(height: 20,),
@@ -116,7 +135,8 @@ class HomeTab extends StatelessWidget {
               ),
               itemBuilder: (context, index) {
                 return ServiceWidget(
-                  imagePath: services[index].imagePath,
+                  service: services[index],
+                  imagePath: services[index].imageUrl,
                   title: services[index].title,
                 );
               },
@@ -138,9 +158,9 @@ class HomeTab extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemBuilder: (buildContext, index) {
-                return recommended[index];
+                return RecommendedWidget(recommendationModel: recommends[index]);
               },
-              itemCount: recommended.length,
+              itemCount: recommends.length,
             ),
           ),
         ],

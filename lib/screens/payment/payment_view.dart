@@ -21,7 +21,7 @@ class PaymentView extends StatefulWidget {
 class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements PaymentConnector {
 
   MyUser? user;
-  ServiceWidget service = ServiceWidget(title: "Deep cleaning service", imagePath: Image.asset("assets/images/img_6.png"));
+  //ServiceWidget service = ServiceWidget(title: "Deep cleaning service", imagePath: "gs://homear-intern.appspot.com/app_images/Group 34983.png");
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -65,7 +65,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           SizedBox(height: 10,),
           Container(
             alignment: Alignment.center,
-            child: Text(service.title,style: TextStyle(
+            child: Text("title",style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 16,
               fontWeight: FontWeight.w500,

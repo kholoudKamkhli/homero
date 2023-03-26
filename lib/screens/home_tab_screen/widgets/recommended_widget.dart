@@ -1,16 +1,37 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class RecommendedWidget extends StatelessWidget {
-  Image path;
-  String name;
-  String latestReview;
-  String username;
-  RecommendedWidget({required this.path,required this.username,required this.name,required this.latestReview});
+import '../../../database/user_database.dart';
+import '../../../models/reccomendation_model.dart';
+import '../../../models/user_model.dart';
+
+class RecommendedWidget extends StatefulWidget {
+  RecommendationModel recommendationModel;
+
+  RecommendedWidget({required this.recommendationModel});
 
   @override
+  State<RecommendedWidget> createState() => _RecommendedWidgetState();
+}
+
+class _RecommendedWidgetState extends State<RecommendedWidget> {
+  MyUser ?user;
+  Future<void> initUser() async {
+    print(FirebaseAuth.instance.currentUser!.uid);
+    user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+    setState(() {
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initUser();
+  }
+  @override
   Widget build(BuildContext context) {
-    return Card(
+    return user==null?Center(child: CircularProgressIndicator(),):Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -20,10 +41,10 @@ class RecommendedWidget extends StatelessWidget {
         child: Row(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(14),
               child: SizedBox(
                 height: 128,
-                  child: path),
+                  child: Image.network(widget.recommendationModel.imagePath)),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -33,7 +54,7 @@ class RecommendedWidget extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 8),
-                      child: Text(name,style: const TextStyle(
+                      child: Text(widget.recommendationModel.title,style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         //color: Colors.black54
@@ -43,15 +64,18 @@ class RecommendedWidget extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
-                          icon: const ImageIcon(
-                            AssetImage("assets/images/img_1.png"),
-                            color: Color.fromARGB(255, 52, 205, 196),
+                          icon: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(user!.imageUrl == ""
+                                ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
+                                : user!.imageUrl),
                           ),
+                          color: Color.fromARGB(255, 52, 205, 196),
                           onPressed: () {
                             // do something
                           },
                         ),
-                        Text(username,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
+                        Text(user!.username,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
                       ],
                     ),
                     //Text("Latest Reviews",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
@@ -63,7 +87,7 @@ class RecommendedWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(latestReview,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black54),),
+                  child: Text(widget.recommendationModel.latestReview,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black54),),
                 ),
                 Row(children: [
                   Column(

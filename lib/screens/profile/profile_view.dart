@@ -45,12 +45,11 @@ class _ProfileViewState extends State<ProfileView> {
             height: 100,
             child: CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.transparent,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child:user!.imageUrl == ""?Image.asset("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"):Image.network(user!.imageUrl),
+              backgroundImage: NetworkImage(user!.imageUrl == ""
+                  ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
+                  : user!.imageUrl),
 
-              )),
+            ),
             ),
           const SizedBox(
             height: 20,

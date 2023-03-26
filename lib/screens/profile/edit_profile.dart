@@ -120,16 +120,10 @@ class _EditProfileState extends State<EditProfile> {
                           children: [
                             CircleAvatar(
                               radius: 50,
-                              backgroundColor: Colors.transparent,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: user!.imageUrl == ""
-                                    ? Image.asset(
-                                        "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg")
-                                    : Image.network(
-                                        user!.imageUrl,
-                                      ),
-                              ),
+                              backgroundImage: NetworkImage(user!.imageUrl == ""
+                                  ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
+                                  : user!.imageUrl),
+
                             ),
                             Positioned(
                                 right: 0,
@@ -344,57 +338,7 @@ class _EditProfileState extends State<EditProfile> {
                     SizedBox(
                       height: 20,
                     ),
-                    // SizedBox(
-                    //   height: 44,
-                    //   child: TextFormField(
-                    //     controller: passwordCont,
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return "Please enter valid name";
-                    //       } else {
-                    //         return null;
-                    //       }
-                    //     },
-                    //     focusNode: passwordFocus,
-                    //     obscureText: true,
-                    //     obscuringCharacter: ".",
-                    //     decoration: InputDecoration(
-                    //       //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                    //       suffixIcon: Icon(
-                    //         Icons.lock_outline,
-                    //         size: 15,
-                    //         color: Colors.grey,
-                    //       ),
-                    //       focusColor: Colors.transparent,
-                    //       hintText: ".......",
-                    //       hintStyle: TextStyle(
-                    //         color: Colors.grey,
-                    //         fontSize: 18,
-                    //       ),
-                    //       labelText: "Password",
-                    //       labelStyle: TextStyle(
-                    //           color: passwordFocus.hasFocus
-                    //               ? Colors.tealAccent
-                    //               : Colors.grey),
-                    //       filled: true,
-                    //       enabled: true,
-                    //       fillColor: passwordFocus.hasFocus
-                    //           ? Colors.transparent
-                    //           : Colors.white,
-                    //       enabledBorder: OutlineInputBorder(
-                    //         borderSide: BorderSide(
-                    //             color: passwordFocus.hasFocus
-                    //                 ? Colors.tealAccent
-                    //                 : Colors.white),
-                    //         borderRadius: BorderRadius.circular(10),
-                    //       ),
-                    //       focusedBorder: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.circular(10),
-                    //         borderSide: BorderSide(color: Colors.tealAccent),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    
                     InkWell(
                       onTap: ()async{
                           try{
@@ -447,13 +391,7 @@ class _EditProfileState extends State<EditProfile> {
                             UserDatabase.editUser(user!);
                           }
                         },
-                        style: TextStyle(
-                          fontSize: 8,
-                        ),
-                        onTap: ()async{
-                          var first = await getUserLocation();
-                           locationCont.text = first?.addressLine?.toString()??"";
-                        },
+
                         controller: locationCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -507,15 +445,15 @@ class _EditProfileState extends State<EditProfile> {
             ),
     );
   }
-  Future<Address?> getUserLocation()async{
-    bool isServiceEnabled =await locationController.requestService();
-    bool isPermessionGranted = await locationController.requestPermession();
-    if(isServiceEnabled&&isPermessionGranted){
-      var locationData = await locationController.getLocation();
-      final coordinates = new Coordinates(locationData?.latitude, locationData?.longitude);
-      var address = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var first = address.first;
-      return first;
-    }
-  }
+  // Future<Address?> getUserLocation()async{
+  //   bool isServiceEnabled =await locationController.requestService();
+  //   bool isPermessionGranted = await locationController.requestPermession();
+  //   if(isServiceEnabled&&isPermessionGranted){
+  //     var locationData = await locationController.getLocation();
+  //     final coordinates = new Coordinates(locationData?.latitude, locationData?.longitude);
+  //     var address = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+  //     var first = address.first;
+  //     return first;
+  //   }
+  // }
 }

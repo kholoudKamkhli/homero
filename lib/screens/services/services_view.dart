@@ -1,94 +1,140 @@
 import 'package:flutter/material.dart';
+import 'package:homero/screens/home_tab_screen/widgets/sub_service_widget.dart';
+import 'package:homero/screens/services/service_tab_widget.dart';
 import 'package:homero/screens/services/services_tab_widget.dart';
 
+import '../../database/service_database.dart';
+import '../../models/service_model.dart';
 import '../home_tab_screen/widgets/service_elements.dart';
 import '../home_tab_screen/widgets/service_widget.dart';
 
-class ServicesView extends StatelessWidget {
+class ServicesView extends StatefulWidget {
+  static const String routeName = "ServicesView";
+
+  @override
+  State<ServicesView> createState() => _ServicesViewState();
+}
+
+class _ServicesViewState extends State<ServicesView> {
+  List<ServiceModel> services = [];
+  List<SubServiceModel> subServices = [];
   int selectedIndex = 0;
+  initSubService()async{
+    subServices =
+    await ServiceDatabase.getServiceSubServices(services[selectedIndex].docID ?? "");
+  }
+  initServices() async {
+    services = await ServiceDatabase.getMainServices();
+    Future.delayed(Duration(seconds: 40));
+    subServices = await ServiceDatabase.getServiceSubServices(services[selectedIndex].id);
+    print(services);
+    setState(() {
+      print("here inside init state id is ${services[selectedIndex].id}");
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initServices();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: SizedBox(
-              height: 60,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                elevation: 4,
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      hintText: "What Services Are You Looking For?",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(12),
-                      )),
-                ),
-              ),
-            ),
+      appBar: AppBar(
+        title: Text(
+          "Services",
+          style: TextStyle(
+            color: Color.fromARGB(255, 84, 84, 84),
           ),
-          ServiceTabsWidget(services: services,),
-          const SizedBox(height: 20,),
-          Container(
-            height: 200,
-            //margin: EdgeInsets.symmetric(horizontal: 10),
-            child: GridView.builder(
-              itemCount: serviceElemets.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1.0,
-              ),
-              itemBuilder: (context, index) {
-                return ServiceWidget(
-                  imagePath: serviceElemets[index].image,
-                  title: serviceElemets[index].name,
-                );
-              },
-            ),
-          ),
-        ],
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back,
+              color: Color.fromARGB(255, 84, 84, 84)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
       ),
+      body: services.length == 0
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: SizedBox(
+                    height: 60,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 4,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                            hintText: "What Services Are You Looking For?",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(12),
+                            )),
+                      ),
+                    ),
+                  ),
+                ),
+                //ServiceTabsWidget(),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 60,
+                  child: DefaultTabController(
+                    length: services.length,
+                    child: TabBar(
+                      onTap: (index) async {
+                        //services = await ServiceDatabase.getMainServices();
+                        setState(() {
+                          selectedIndex = index;
+                          print("inside set state id is ${services[index].id}");
+                          Future.delayed(Duration(seconds: 40));
+                          initSubService();
+                        });
+                      },
+                      tabs: services
+                          .map((e) => ServiceTabWidget(
+                                name: e.title ?? "",
+                                isSelected: selectedIndex == services.indexOf(e)
+                                    ? true
+                                    : false,
+                              ))
+                          .toList(),
+                      isScrollable: true,
+                      indicatorColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  child: subServices.length==0?Center(child: CircularProgressIndicator(),):GridView.builder(
+
+                          itemBuilder: (buildContext, index) {
+                            return SubServiceWidget(subservice: subServices[index]);
+                          },itemCount: subServices.length, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4
+                  ),
+                      ),
+                )
+              ],
+            ),
     );
   }
-  List<ServiceElements> serviceElemets = [
-    ServiceElements(name: "Cleaning", image: Image.asset("assets/images/img_5.png")),
-    ServiceElements(name: "Deep", image: Image.asset("assets/images/img_5.png")),
-    ServiceElements(name: "Normal", image: Image.asset("assets/images/img_5.png")),
-    ServiceElements(name: "premium", image: Image.asset("assets/images/img_5.png")),
-
-  ];
-  List<ServiceWidget> services = [
-    ServiceWidget(
-        title: "Cleaning", imagePath: Image.asset("assets/images/img_6.png")),
-    ServiceWidget(
-        title: "Cooking", imagePath: Image.asset("assets/images/img_5.png")),
-    ServiceWidget(
-        title: "Cleaning", imagePath: Image.asset("assets/images/img_6.png")),
-    ServiceWidget(
-        title: "Repairs", imagePath: Image.asset("assets/images/img_7.png")),
-    ServiceWidget(
-        title: "Re-Organize",
-        imagePath: Image.asset("assets/images/img_8.png")),
-    ServiceWidget(
-        title: "Baby Sitter",
-        imagePath: Image.asset("assets/images/img_9.png")),
-    ServiceWidget(
-        title: "Beauty", imagePath: Image.asset("assets/images/img_10.png")),
-    ServiceWidget(
-        title: "Re-Organize",
-        imagePath: Image.asset("assets/images/img_11.png")),
-  ];
-
-
 }

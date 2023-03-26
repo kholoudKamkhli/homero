@@ -1,31 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:homero/screens/home_tab_screen/widgets/service_elements.dart';
-import 'package:homero/screens/service_details/service_details_view.dart';
+import 'package:homero/screens/workers/worker_view.dart';
 
 import '../../../models/service_model.dart';
-import '../../services/services_view.dart';
-import '../../workers/worker_view.dart';
 
-class ServiceWidget extends StatelessWidget {
-  ServiceModel service;
-  String imagePath;
-  String title;
-  List<String> servicesNames = [
-    "Cleaning",
-    "Cooking",
-    "Cleaning",
-    "Repairs",
-    "Re-Organize",
-    "Baby Sitter",
-    "Beauty",
-    "Re-Organize"
-  ];  ServiceWidget({required this.service,required this.title,required this.imagePath});
+class SubServiceWidget extends StatelessWidget {
+  SubServiceModel subservice;
+  SubServiceWidget({required this.subservice});
   @override
   Widget build(BuildContext context) {
-    
+
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, ServicesView.routeName);
+        Navigator.pushNamed(context, WorkerView.routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -46,12 +32,12 @@ class ServiceWidget extends StatelessWidget {
               Container(
                 height: 34,
                 width: 34,
-                child: Image.network(imagePath),
+                child: Image.network(subservice.imageUrl),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 2),
                 child: Text(
-                  title,
+                  subservice.title,
                   style: TextStyle(
                     color: Colors.black,
                   ),
