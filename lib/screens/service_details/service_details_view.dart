@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_geocoder/model.dart';
+import 'package:homero/database/order_database.dart';
+import 'package:homero/models/order_model.dart';
+import 'package:homero/models/service_model.dart';
+import 'package:homero/screens/payment/payment_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -20,6 +25,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
   var numCont = TextEditingController();
 
   var locationCont = TextEditingController();
+  var formKey = GlobalKey<FormState>();
 
   UserLocationController locationController = UserLocationController();
   var dateCont = TextEditingController();
@@ -41,7 +47,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
 
   @override
   Widget build(BuildContext context) {
+    SubServiceModel service = ModalRoute.of(context)!.settings.arguments as SubServiceModel;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
         title: Text(
@@ -59,9 +67,11 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(child:Padding(
+      body: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Expanded(child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -81,7 +91,8 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
 
                       children: [
                         const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 8),
                           child: Text(
                             "Full name",
                             style: TextStyle(
@@ -126,10 +137,18 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                     height: 70,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color.fromARGB(255, 126, 127, 131)),
+                      border: Border.all(color: Color.fromARGB(255, 126, 127,
+                          131)),
                     ),
                     child: IntlPhoneField(
                       controller: numCont,
+                      validator: (value) {
+                        if (value == null) {
+                          return "Please enter valid name";
+                        } else {
+                          return null;
+                        }
+                      },
                       decoration: InputDecoration(
                         hintText: 'Phone Number',
                         border: InputBorder.none,
@@ -163,16 +182,14 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       height: 70,
                       child: TextFormField(
                         onEditingComplete: () {
-                          if (locationCont.text != null && locationCont.text != "") {
+                          if (locationCont.text != null &&
+                              locationCont.text != "") {
                             // user!.address = locationCont.text;
                             // UserDatabase.editUser(user!);
                           }
                         },
 
-                        onTap: () async {
-                          // var first = await getUserLocation();
-                          // locationCont.text = first?.addressLine?.toString()??"";
-                        },
+
                         controller: locationCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -243,17 +260,6 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                     child: SizedBox(
                       height: 70,
                       child: TextFormField(
-                        onEditingComplete: () {
-                          if (locationCont.text != null && locationCont.text != "") {
-                            // user!.address = locationCont.text;
-                            // UserDatabase.editUser(user!);
-                          }
-                        },
-
-                        onTap: () async {
-                          // var first = await getUserLocation();
-                          // locationCont.text = first?.addressLine?.toString()??"";
-                        },
                         controller: dateCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -326,13 +332,14 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                                 underline: SizedBox(),
                                 value: selectedRoomArea,
                                 items: areas
-                                    .map((room) => DropdownMenuItem<String>(
-                                    value: room,
-                                    child: Row(
-                                      children: [
-                                        Text(room),
-                                      ],
-                                    )))
+                                    .map((room) =>
+                                    DropdownMenuItem<String>(
+                                        value: room,
+                                        child: Row(
+                                          children: [
+                                            Text(room),
+                                          ],
+                                        )))
                                     .toList(),
                                 onChanged: (value) {
                                   if (value == null) {
@@ -372,13 +379,14 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                                 underline: SizedBox(),
                                 value: selectedRoom,
                                 items: rooms
-                                    .map((room) => DropdownMenuItem<int>(
-                                    value: room,
-                                    child: Row(
-                                      children: [
-                                        Text("$room"),
-                                      ],
-                                    )))
+                                    .map((room) =>
+                                    DropdownMenuItem<int>(
+                                        value: room,
+                                        child: Row(
+                                          children: [
+                                            Text("$room"),
+                                          ],
+                                        )))
                                     .toList(),
                                 onChanged: (value) {
                                   if (value == null) {
@@ -437,21 +445,22 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                     margin: EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: isSwitched?Colors.white:Color.fromARGB(
+                        color: isSwitched ? Colors.white : Color.fromARGB(
                             255, 234, 234, 234)),
                     child: DropdownButton(
                         underline: SizedBox(),
                         value: selectedSchedule,
                         items: schedules
-                            .map((schedule) => DropdownMenuItem<String>(
-                            value: schedule,
-                            child: Row(
-                              children: [
-                                Text(schedule),
-                              ],
-                            )))
+                            .map((schedule) =>
+                            DropdownMenuItem<String>(
+                                value: schedule,
+                                child: Row(
+                                  children: [
+                                    Text(schedule),
+                                  ],
+                                )))
                             .toList(),
-                        onChanged: isSwitched?(value) {
+                        onChanged: isSwitched ? (value) {
                           if (value == null) {
                             return;
                           } else {
@@ -459,48 +468,71 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                               selectedSchedule = value;
                             });
                           }
-                        }:null),
+                        } : null),
                   ),
 
                 ],
               ),
             ),),
 
-          Container(
-            alignment: Alignment.center,
-            height: 127,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 84, 84, 84),
-            ),
-            child: InkWell(
-              // onTap: () {
-              //   buttonClicked = !buttonClicked;
-              //   setState(() {});
-              // },
-              onTap: (){
-                Navigator.pushNamed(context, WorkerView.routeName);
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.7,
-                height: 58,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Color.fromARGB(255, 52, 205, 196),
-                ),
-                child: Text(
-                  "Confirm",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+            Container(
+              alignment: Alignment.center,
+              height: 127,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 84, 84, 84),
+              ),
+              child: InkWell(
+                // onTap: () {
+                //   buttonClicked = !buttonClicked;
+                //   setState(() {});
+                // },
+                onTap: () async{
+                  if (formKey.currentState!.validate()) {
+                    OrderModel order = OrderModel(
+                      cost: service.cost,
+                      uId: FirebaseAuth.instance.currentUser!.uid,
+                        serviceName:service.title, location: locationCont.text,
+                        date: selectedDate,
+                        area: selectedRoomArea,
+                        fullName: nameCont.text,
+                        isFinished: false,
+                        isScheduled: isSwitched,
+                        mobileNum: completeNum,
+                        numOfRoom: selectedRoom,
+                        scheduling: selectedSchedule);
+                    await OrderDatabase.addOrder(order);
+                    Navigator.pushNamed(
+                        context, PaymentView.routeName, arguments: order);
+                  }
+                },
+                child: Container(
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.7,
+                  height: 58,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: Color.fromARGB(255, 52, 205, 196),
+                  ),
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -513,9 +545,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
     if (isServiceEnabled && isPermessionGranted) {
       var locationData = await locationController.getLocation();
       final coordinates =
-          new Coordinates(locationData?.latitude, locationData?.longitude);
+      new Coordinates(locationData?.latitude, locationData?.longitude);
       var address =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      await Geocoder.local.findAddressesFromCoordinates(coordinates);
       var first = address.first;
       return first;
     }
@@ -554,5 +586,5 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
 
   List<String> areas = ["80-120 sqm", "120-200 sqm", "200-400 sqm"];
   List<int> rooms = [1, 2, 3, 4, 5, 6, 7, 8];
-  List<String>schedules = ["Every Week","Every Month","Every Year"];
+  List<String>schedules = ["Every Week", "Every Month", "Every Year"];
 }

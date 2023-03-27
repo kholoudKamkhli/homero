@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/controllers/payment/payment_connector.dart';
 import 'package:homero/controllers/payment/payment_view_model.dart';
+import 'package:homero/models/order_model.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/home_tab_screen/widgets/service_widget.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
   }
   @override
   Widget build(BuildContext context) {
+    var order = ModalRoute.of(context)!.settings.arguments as OrderModel;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -65,7 +67,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           SizedBox(height: 10,),
           Container(
             alignment: Alignment.center,
-            child: Text("title",style: TextStyle(
+            child: Text(order.serviceName,style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -74,7 +76,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           SizedBox(height: 20,),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 30.0),
-            child: Text("${user?.address??"address"}",style: TextStyle(
+            child: Text(order.location,style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -82,7 +84,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 30.0),
-            child: Text("${DateFormat.yMMMEd().format(DateTime.now())}",style: TextStyle(
+            child: Text("${DateFormat.yMMMEd().format(order.date)}",style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -90,7 +92,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 30.0),
-            child: Text("Number of Rooms",style: TextStyle(
+            child: Text("${order.numOfRoom} Rooms",style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -98,7 +100,11 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 30.0),
-            child: Text("1 service-non scheduled",style: TextStyle(
+            child: order.isScheduled?Text("1 service-${order.scheduling}",style: TextStyle(
+              color:Color.fromARGB(255, 126, 127, 131),
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),):Text("1 service-non scheduled",style: TextStyle(
               color:Color.fromARGB(255, 126, 127, 131),
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -148,7 +154,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
                 ),),
                 Spacer(),
                 Padding(padding: EdgeInsets.only(right: 30),
-                  child: Text("380 LE",style: TextStyle(
+                  child: Text("${order.cost} LE",style: TextStyle(
                     color:Color.fromARGB(255, 126, 127, 131),
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -180,7 +186,7 @@ class _PaymentViewState extends BaseView<PaymentViewModel,PaymentView>implements
                 ),),
                 Spacer(),
                 Padding(padding: EdgeInsets.only(right: 30),
-                  child: Text("380 LE",style: TextStyle(
+                  child: Text("${order.cost} LE",style: TextStyle(
                     color:Color.fromARGB(255, 126, 127, 131),
                     fontSize: 14,
                     fontWeight: FontWeight.w400,

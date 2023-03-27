@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:homero/controllers/payment/payment_view_model.dart';
+import 'package:homero/models/service_model.dart';
+import 'package:homero/models/worker_model.dart';
 import 'package:homero/screens/payment/payment_view.dart';
 import 'package:homero/screens/workers/worker_widget.dart';
 import 'package:http/http.dart' as http;
+
+import '../../database/worker_database.dart';
+import '../service_details/service_details_view.dart';
 
 class WorkerView extends StatefulWidget {
   static const String routeName = "Worker";
@@ -17,34 +22,11 @@ class WorkerView extends StatefulWidget {
 
 class _WorkerViewState extends State<WorkerView> {
   static bool buttonClicked = false;
-  List<WorkerWidget> workers = [
-    WorkerWidget(
-      image: Image.asset(
-        "assets/images/img_35.png",
-        width: 82,
-        height: 82,
-      ),
-      name: "Aly Said",
-      jobTitle: "Cleaning Expert",
-      numOfDoneTasks: 4,
-      numOfRatings: 12,
-      rating: 4,
-      changecolor:(){},
-    ),
-    WorkerWidget(
-      image: Image.asset("assets/images/img_36.png", width: 82, height: 82),
-      name: "Lily Khalaf",
-      jobTitle: "Cleaning Expert",
-      numOfDoneTasks: 4,
-      numOfRatings: 12,
-      rating: 3,
-      changecolor: (){
-        buttonClicked = !buttonClicked;
-        print("is Clicked $buttonClicked");
-      },
-    ),
-    //WorkerWidget(image: Image.asset("assets/images/img_35.png"), name: "Aly Said", jobTitle: "Cleaning Expert", numOfDoneTasks: 4, numOfRatings: 12, rating: 4),
-  ];
+  List<WorkerModel>workers = [];
+  Future<List<WorkerModel>> initWorkers(String serviceName) async {
+    List<WorkerModel> workers = await WorkerDatabase.getWorkers(serviceName);
+    return workers;
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -58,6 +40,7 @@ class _WorkerViewState extends State<WorkerView> {
 
   @override
   Widget build(BuildContext context) {
+    SubServiceModel service = ModalRoute.of(context)!.settings.arguments as SubServiceModel;
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
@@ -81,14 +64,34 @@ class _WorkerViewState extends State<WorkerView> {
           SizedBox(
             height: 10,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (_, index) {
-                return  getWorkers()[index];
-              },
-              itemCount: getWorkers().length,
-            ),
-          ),
+          //
+          Expanded(child: FutureBuilder<List<WorkerModel>>(
+            future: initWorkers(service.title??""),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                workers = (snapshot.data as List<WorkerModel>?) ?? [];
+                print(service.title??"");
+                print(workers.length);
+                return ListView.builder(
+                  itemBuilder: (_, index) {
+                    return WorkerWidget(
+                      worker: workers[index],
+                      changecolor: onClickCallBack,
+                    );
+                  },
+                  itemCount: workers.length,
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),),
           Container(
             alignment: Alignment.center,
             height: 127,
@@ -105,7 +108,7 @@ class _WorkerViewState extends State<WorkerView> {
               // },
               onTap: (){
                 if(buttonClicked == true){
-                   Navigator.pushNamed(context, PaymentView.routeName);
+                   Navigator.pushNamed(context, ServiceDetailsView.routeName,arguments: service);
                 }
               },
               child: Container(
@@ -143,33 +146,6 @@ class _WorkerViewState extends State<WorkerView> {
     setState(() {
 
     });
-  }
-  List<WorkerWidget> getWorkers(){
-    return [
-      WorkerWidget(
-        image: Image.asset(
-          "assets/images/img_35.png",
-          width: 82,
-          height: 82,
-        ),
-        name: "Aly Said",
-        jobTitle: "Cleaning Expert",
-        numOfDoneTasks: 4,
-        numOfRatings: 12,
-        rating: 4,
-        changecolor:onClickCallBack,
-      ),
-      WorkerWidget(
-        image: Image.asset("assets/images/img_36.png", width: 82, height: 82),
-        name: "Lily Khalaf",
-        jobTitle: "Cleaning Expert",
-        numOfDoneTasks: 4,
-        numOfRatings: 12,
-        rating: 3,
-        changecolor:onClickCallBack,
-      ),
-      //WorkerWidget(image: Image.asset("assets/images/img_35.png"), name: "Aly Said", jobTitle: "Cleaning Expert", numOfDoneTasks: 4, numOfRatings: 12, rating: 4),
-    ];
   }
 
 }

@@ -10,16 +10,8 @@ class ServiceWidget extends StatelessWidget {
   ServiceModel service;
   String imagePath;
   String title;
-  List<String> servicesNames = [
-    "Cleaning",
-    "Cooking",
-    "Cleaning",
-    "Repairs",
-    "Re-Organize",
-    "Baby Sitter",
-    "Beauty",
-    "Re-Organize"
-  ];  ServiceWidget({required this.service,required this.title,required this.imagePath});
+
+    ServiceWidget({required this.service,required this.title,required this.imagePath});
   @override
   Widget build(BuildContext context) {
     

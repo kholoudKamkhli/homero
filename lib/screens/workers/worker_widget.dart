@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:homero/models/worker_model.dart';
 
 class WorkerWidget extends StatefulWidget {
-  Image image;
-  String name;
-  String jobTitle;
-  int numOfRatings;
-  int rating;
-  int numOfDoneTasks;
+  WorkerModel worker;
   Function changecolor;
 
   WorkerWidget(
-      {required this.image,
-      required this.name,
-      required this.jobTitle,
-      required this.numOfDoneTasks,
-      required this.numOfRatings,
-      required this.rating,
+      {required this.worker,
       required this.changecolor});
 
   @override
@@ -53,7 +44,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
               Container(
                 width: 62,
                 height: 62,
-                child: widget.image,
+                child: Image.network(widget.worker.imagePath),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -62,7 +53,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                   Padding(
                     padding: EdgeInsets.only(left: 9, top: 6, bottom: 2),
                     child: Text(
-                      widget.name,
+                      widget.worker.name,
                       style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -74,7 +65,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 9, vertical: 8),
                         child: Text(
-                          widget.jobTitle,
+                          widget.worker.jobTitle,
                           style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -87,7 +78,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                         width: 100,
                       ),
                       Text(
-                        "${widget.numOfRatings} Ratings",
+                        "${widget.worker.numOfRatings} Ratings",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
@@ -114,14 +105,14 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                                 color: Colors.amber,
                               ),
                               onRatingUpdate: (rating) {
-                                print(widget.numOfRatings);
+                                print(widget.worker.numOfRatings);
                               },
                             ),
                           ),
                           SizedBox(width:50),
                           Icon(Icons.done,color: Color.fromARGB(255, 126, 127, 131,),size: 14,),
                           SizedBox(width: 3,),
-                          Text("${widget.numOfDoneTasks} Cleaning Tasks",style: TextStyle(
+                          Text("${widget.worker.numOfTasks} Cleaning Tasks",style: TextStyle(
                             color: Color.fromARGB(255, 126, 127, 131,),
                             fontWeight: FontWeight.w500,
                             fontSize:12 ,

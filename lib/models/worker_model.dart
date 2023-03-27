@@ -1,10 +1,13 @@
 class WorkerModel{
+  static const String COLLECTION_NAME  = "Workers";
+
   String name;
   String jobTitle;
   int numOfTasks;
   int numOfRatings;
   String imagePath;
   String serviceName;
+
   WorkerModel({required this.imagePath,required this.numOfRatings,required this.jobTitle,required this.name,required this.numOfTasks,required this.serviceName});
   WorkerModel.fromJson(Map<String,dynamic>json):this(
     name:json["name"],
