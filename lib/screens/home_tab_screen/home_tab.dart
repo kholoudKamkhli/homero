@@ -128,7 +128,7 @@ class _HomeTabState extends State<HomeTab> {
             height: 200,
             //margin: EdgeInsets.symmetric(horizontal: 10),
             child: GridView.builder(
-              itemCount: 8,
+              itemCount: services.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 childAspectRatio: 1.0,

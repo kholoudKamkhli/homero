@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:strings/strings.dart';
 
 import '../models/service_model.dart';
-
 class ServiceDatabase {
   static CollectionReference<ServiceModel> getServicesCollection() {
     return FirebaseFirestore.instance
@@ -34,6 +34,17 @@ class ServiceDatabase {
     return snapshot.docs
         .map((doc) => doc.data()).toList();
   }
+  static Future<List<SubServiceModel>> getAllSubServices(String searchString) async {
+    searchString = capitalize(searchString);
+    List<ServiceModel> services = await getMainServices();
+    List<SubServiceModel> subServices = [];
+    for (int i = 0; i < services.length; i++) {
+      subServices.addAll(await getServiceSubServices(services[i].id));
+    }
+    List<SubServiceModel> filteredSubServices =
+    subServices.where((subService) => subService.title.contains(searchString)).toList();
+    return filteredSubServices;
+  }
   static Future<List<SubServiceModel>> getServiceSubServices(String id)async{
     print('id inside getSubServices $id');
 
@@ -45,5 +56,24 @@ class ServiceDatabase {
       print("title one ${subServices[i].title}");
     }
     return subServices;
+  }
+  static Future<List<ServiceModel>> searchServiceByTitle(String title) async {
+    title  = capitalize(title);
+    List<ServiceModel> searchResults = [];
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection(ServiceModel.COLLECTION_NAME)
+        .where("title", isGreaterThanOrEqualTo: title).where("title", isLessThanOrEqualTo: "$title\uf7ff")
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      snapshot.docs.forEach((doc) {
+        final service = ServiceModel.fromJson(doc.data());
+        service.docID = doc.id;
+        searchResults.add(service);
+      });
+    }
+
+    return searchResults;
   }
 }

@@ -17,7 +17,7 @@ class ServiceWidget extends StatelessWidget {
     
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, ServicesView.routeName);
+        Navigator.pushNamed(context, ServicesView.routeName,arguments: service.id);
       },
       child: Card(
         shape: RoundedRectangleBorder(

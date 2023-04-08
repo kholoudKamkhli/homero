@@ -1,11 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/models/user_model.dart';
-import 'package:homero/screens/home_tab_screen/widgets/ad_widget.dart';
-import 'package:homero/screens/home_tab_screen/widgets/package_widget.dart';
-import 'package:homero/screens/home_tab_screen/widgets/recommended_widget.dart';
-import 'package:homero/screens/home_tab_screen/widgets/service_widget.dart';
 import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/profile/profile_view.dart';
 import 'package:homero/screens/services/services_view.dart';

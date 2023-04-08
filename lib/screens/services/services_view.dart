@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/home_tab_screen/widgets/sub_service_widget.dart';
 import 'package:homero/screens/services/service_tab_widget.dart';
-import 'package:homero/screens/services/services_tab_widget.dart';
 
 import '../../database/service_database.dart';
 import '../../models/service_model.dart';
-import '../home_tab_screen/widgets/service_elements.dart';
 import '../home_tab_screen/widgets/service_widget.dart';
 
 class ServicesView extends StatefulWidget {
@@ -18,15 +16,20 @@ class ServicesView extends StatefulWidget {
 class _ServicesViewState extends State<ServicesView> {
   List<ServiceModel> services = [];
   List<SubServiceModel> subServices = [];
+  String? searchService;
   int selectedIndex = 0;
-  initSubService()async{
-    subServices =
-    await ServiceDatabase.getServiceSubServices(services[selectedIndex].docID ?? "");
+  List<SubServiceModel>searchServices = [];
+
+  initSubService() async {
+    subServices = await ServiceDatabase.getServiceSubServices(
+        services[selectedIndex].id ?? "");
   }
+
   initServices() async {
     services = await ServiceDatabase.getMainServices();
     Future.delayed(Duration(seconds: 40));
-    subServices = await ServiceDatabase.getServiceSubServices(services[selectedIndex].id);
+    subServices = await ServiceDatabase.getServiceSubServices(
+        services[selectedIndex].id ?? "");
     print(services);
     setState(() {
       print("here inside init state id is ${services[selectedIndex].id}");
@@ -36,6 +39,8 @@ class _ServicesViewState extends State<ServicesView> {
   @override
   void initState() {
     super.initState();
+    //String? serviceId = ModalRoute.of(context)?.settings.arguments as String?;
+    //print("here is service ID $serviceId");
     initServices();
   }
 
@@ -58,44 +63,53 @@ class _ServicesViewState extends State<ServicesView> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: services.length == 0
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  child: SizedBox(
-                    height: 60,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      elevation: 4,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            hintText: "What Services Are You Looking For?",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(12),
-                            )),
-                      ),
-                    ),
-                  ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: SizedBox(
+              height: 60,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                //ServiceTabsWidget(),
-                SizedBox(
+                elevation: 4,
+                child: TextFormField(
+                  onChanged: (value)async{
+                    searchService = value;
+                    searchServices = await ServiceDatabase.getAllSubServices(value);
+                    setState(() {
+                    print("onChanged value $searchService");
+                    });
+                  },
+                  decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      hintText: "What Services Are You Looking For?",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                      )),
+                ),
+              ),
+            ),
+          ),
+          //ServiceTabsWidget(),
+          searchService != null
+              ? SizedBox(
+                  height: 0,
+                )
+              : SizedBox(
                   height: 10,
                 ),
-                SizedBox(
+          searchService != null
+              ? Container()
+              : SizedBox(
                   height: 60,
                   child: DefaultTabController(
                     length: services.length,
@@ -104,8 +118,8 @@ class _ServicesViewState extends State<ServicesView> {
                         //services = await ServiceDatabase.getMainServices();
                         setState(() {
                           selectedIndex = index;
-                          print("inside set state id is ${services[index].id}");
-                          Future.delayed(Duration(seconds: 40));
+                          // print("inside set state id is ${services[index].id}");
+                          // Future.delayed(Duration(seconds: 40));
                           initSubService();
                         });
                       },
@@ -123,18 +137,40 @@ class _ServicesViewState extends State<ServicesView> {
                   ),
                 ),
 
-                Expanded(
-                  child: subServices.length==0?Center(child: CircularProgressIndicator(),):GridView.builder(
-
-                          itemBuilder: (buildContext, index) {
-                            return SubServiceWidget(subservice: subServices[index]);
-                          },itemCount: subServices.length, gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4
-                  ),
-                      ),
-                )
-              ],
+          searchService != null
+              ? Expanded(
+            child: searchServices.length == 0
+                ? Center(
+              child: Text("No matched results"),
+            )
+                : GridView.builder(
+              itemBuilder: (buildContext, index) {
+                return SubServiceWidget(subservice: searchServices[index]);
+              },
+              itemCount: searchServices.length,
+              gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4),
             ),
+          )
+              : Expanded(
+                  child: subServices.length == 0
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : GridView.builder(
+                          itemBuilder: (buildContext, index) {
+                            return SubServiceWidget(
+                                subservice: subServices[index]);
+                          },
+                          itemCount: subServices.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4),
+                        ),
+                )
+        ],
+      ),
     );
   }
 }
