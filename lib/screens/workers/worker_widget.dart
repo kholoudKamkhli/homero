@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:homero/models/worker_model.dart';
+import 'package:homero/screens/workers/worker_view.dart';
 
 class WorkerWidget extends StatefulWidget {
   WorkerModel worker;
   Function changecolor;
-
+  int index;
   WorkerWidget(
       {required this.worker,
-      required this.changecolor});
+      required this.changecolor,  required this.index,
+
+      });
 
   @override
   State<WorkerWidget> createState() => _WorkerWidgetState();
@@ -21,9 +24,22 @@ class _WorkerWidgetState extends State<WorkerWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-        isSelected = !isSelected;
-        print(isSelected);
-        widget.changecolor(isSelected);
+        if(isSelected){
+          numOfChoosenWorkers--;
+          print("num of chosen workers $numOfChoosenWorkers");
+          isSelected = !isSelected;
+          widget.changecolor(isSelected);
+        }
+        else{
+          if(numOfChoosenWorkers==0){
+            numOfChoosenWorkers++;
+            print("num of choen workers $numOfChoosenWorkers");
+            isSelected = !isSelected;
+            print(isSelected);
+            widget.changecolor(isSelected,widget.index);
+          }
+        }
+
         setState(() {
 
         });

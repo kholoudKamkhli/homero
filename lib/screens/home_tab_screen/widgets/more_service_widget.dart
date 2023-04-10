@@ -8,21 +8,25 @@ class MoreServiceWidget extends ServiceWidget {
 
 
 
+
   @override
   Widget build(BuildContext context) {
 
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, ServicesView.routeName);
+        Navigator.pushNamed(context, ServicesView.routeName,arguments: service.id);
       },
       child: Card(
+        elevation: 0,
         shape: RoundedRectangleBorder(
 
           borderRadius: BorderRadius.circular(5),
         ),
         child: Container(
+          alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Color.fromARGB(0, 206, 199, 199)
+            borderRadius: BorderRadius.circular(5),
+            color: Color.fromARGB(255, 184, 181, 181)
           ),
           width: 90,
           height: 70,
@@ -31,12 +35,14 @@ class MoreServiceWidget extends ServiceWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.add,color: Color.fromARGB(0, 206, 199, 199)
+                  Icon(Icons.add,color: Colors.black54
+
                     ,size:12 ,),
                   SizedBox(width: 4,),
                   Text("More",style: TextStyle(
-                      color: Color.fromARGB(0, 206, 199, 199),
+                      color: Colors.black54,
                     fontSize:12 ,
                     fontWeight: FontWeight.w400,
                   ),)

@@ -15,15 +15,17 @@ class OrderModel{
   String serviceName;
   double cost;
   String? uId;
-  OrderModel({required this.cost,this.uId,required this.serviceName,required this.location,required this.date,required this.area,required this.fullName,required this.isFinished,required this.isScheduled,required this.mobileNum,required this.numOfRoom,required this.scheduling});
+  String workerName;
+  OrderModel({required this.cost,this.uId,required this.serviceName,required this.location,required this.date,required this.area,required this.fullName,required this.isFinished,required this.isScheduled,required this.mobileNum,required this.numOfRoom,required this.scheduling, required this.workerName});
   OrderModel.fromJson(Map<String,dynamic>json):this(
     uId:json["uId"],
     cost:json["cost"],
+    workerName: json["workerName"],
     serviceName:json["serviceName"],
     fullName:json["fullName"],
     mobileNum:json["mobileNum"],
     location:json["location"],
-    date:DateTime.fromMillisecondsSinceEpoch(json['DateTime']),
+    date:DateTime.fromMillisecondsSinceEpoch(json['date']),
     area:json["area"],
     numOfRoom:json["numOfRoom"],
     scheduling:json["scheduling"],
@@ -33,6 +35,7 @@ class OrderModel{
   );
   Map<String,dynamic>toJson(){
     return {
+      "workerName":workerName,
       "uId":uId,
       "serviceName":serviceName,
       "cost":cost,

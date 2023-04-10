@@ -55,12 +55,13 @@ dependencies:
   flutter_dotenv: ^5.0.2
   http: ^0.13.5
   calendar_timeline: ^1.1.2
-  flutter_map: ^3.1.0
   latlong2: ^0.8.1
   geocoder2: ^1.4.0
   url_launcher: ^6.1.10
   flutter_polyline_points: ^1.0.0
   strings: ^0.2.2
+  dio: ^5.1.1
+
 
 dev_dependencies:
   flutter_test:

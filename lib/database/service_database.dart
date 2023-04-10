@@ -34,6 +34,28 @@ class ServiceDatabase {
     return snapshot.docs
         .map((doc) => doc.data()).toList();
   }
+  static Future<List<ServiceModel>> getServiceById(String serviceId) async {
+    final snapshot = await getServicesCollection().where('id', isEqualTo: serviceId).get();
+    List<ServiceModel>ss =  snapshot.docs
+        .map((doc) => doc.data()).toList();
+    return ss;
+  }
+
+  static Future<SubServiceModel> getSubServiceByName(String name) async {
+    List<ServiceModel> services = await getMainServices();
+    List<SubServiceModel> subServices = [];
+    for (int i = 0; i < services.length; i++) {
+      subServices.addAll(await getServiceSubServices(services[i].id));
+    }
+    for(int i=0;i<subServices.length;i++){
+      if(subServices[i].title==name) {
+        print("recommended service name ${subServices[i].title}");
+        return subServices[i];
+      }
+    }
+    print("recommended 0 service name ${subServices[0].title}");
+    return subServices[0];
+  }
   static Future<List<SubServiceModel>> getAllSubServices(String searchString) async {
     searchString = capitalize(searchString);
     List<ServiceModel> services = await getMainServices();

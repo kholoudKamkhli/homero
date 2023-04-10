@@ -1,10 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:homero/database/service_database.dart';
+import 'package:homero/models/service_model.dart';
+import 'package:homero/screens/workers/worker_view.dart';
 
+import '../../../database/recommendation_database.dart';
 import '../../../database/user_database.dart';
 import '../../../models/reccomendation_model.dart';
 import '../../../models/user_model.dart';
+import '../../../models/worker_model.dart';
+import '../../service_details/service_details_view.dart';
 
 class RecommendedWidget extends StatefulWidget {
   RecommendationModel recommendationModel;
@@ -16,10 +22,12 @@ class RecommendedWidget extends StatefulWidget {
 }
 
 class _RecommendedWidgetState extends State<RecommendedWidget> {
-  MyUser ?user;
-  Future<void> initUser() async {
-    print(FirebaseAuth.instance.currentUser!.uid);
-    user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+  WorkerModel? worker;
+  SubServiceModel ?subService2;
+  late SubServiceModel subService;
+  initRecommend()async{
+    worker = await RecommendationDatabase.getRecommendedWorker(widget.recommendationModel.id);
+    subService2 = await RecommendationDatabase.getRecommendedSubService(widget.recommendationModel.id);
     setState(() {
     });
   }
@@ -27,11 +35,13 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initUser();
+    initRecommend();
+    setState(() {
+    });
   }
   @override
   Widget build(BuildContext context) {
-    return user==null?Center(child: CircularProgressIndicator(),):Card(
+    return  worker!=null&&subService2!=null?Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -53,8 +63,8 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 8),
-                      child: Text(widget.recommendationModel.title,style: const TextStyle(
+                      padding:  EdgeInsets.only(left: 5,top: 8,bottom: 8,right: MediaQuery.of(context).size.width*0.1),
+                      child: Text(worker!.serviceName,style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         //color: Colors.black54
@@ -66,19 +76,16 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                         IconButton(
                           icon: CircleAvatar(
                             radius: 50,
-                            backgroundImage: NetworkImage(user!.imageUrl == ""
-                                ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
-                                : user!.imageUrl),
+                            backgroundImage: NetworkImage(worker!.imagePath),
                           ),
                           color: Color.fromARGB(255, 52, 205, 196),
                           onPressed: () {
                             // do something
                           },
                         ),
-                        Text(user!.username,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
+                        Text(worker!.name,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
                       ],
                     ),
-                    //Text("Latest Reviews",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 12),)
                   ],
                 ),
                 const Padding(
@@ -87,7 +94,7 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(widget.recommendationModel.latestReview,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black54),),
+                  child: Text(worker!.latestReview,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black54),),
                 ),
                 Row(children: [
                   Column(
@@ -118,20 +125,29 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                       )
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 130,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 52, 205, 196),
-                        borderRadius: BorderRadius.circular(5),
+                  InkWell(
+                    onTap: (){
+                      print("sending service with id ${subService2!.id}");
+                      Navigator.pushNamed(context, ServiceDetailsView.routeName,arguments: {
+                        'service': subService2,
+                        'workerName': worker!.name,
+                      },);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 130,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 52, 205, 196),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Text("Order Now",style: TextStyle(
+                          color: Colors.
+                            white
+                        ),),
                       ),
-                      child: const Text("Order Now",style: TextStyle(
-                        color: Colors.
-                          white
-                      ),),
                     ),
                   )
 
@@ -141,6 +157,6 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
           ],
         ),
       ),
-    );
+    ):Center(child: CircularProgressIndicator(),);
   }
 }

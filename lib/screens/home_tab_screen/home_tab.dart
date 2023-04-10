@@ -5,7 +5,9 @@ import 'package:homero/database/service_database.dart';
 import 'package:homero/models/ad_model.dart';
 import 'package:homero/models/reccomendation_model.dart';
 import 'package:homero/models/service_model.dart';
+import 'package:homero/screens/home_tab_screen/widgets/more_service_widget.dart';
 
+import '../../models/worker_model.dart';
 import 'widgets/ad_widget.dart';
 import 'widgets/package_widget.dart';
 import 'widgets/recommended_widget.dart';
@@ -21,6 +23,7 @@ class _HomeTabState extends State<HomeTab> {
 
   List<AdModel> ads = [];
   List<RecommendationModel> recommends = [];
+  List<ServiceWidget> servicesWidgets = [];
 
   List<PackageWidget> packages = [PackageWidget(title: "Wedding", color: const Color.fromARGB(
       255, 52, 205, 196)),
@@ -39,6 +42,8 @@ class _HomeTabState extends State<HomeTab> {
     services = await ServiceDatabase.getMainServices();
     ads = await AdDatabase.getAds();
     recommends = await RecommendationDatabase.getRecommends();
+    // WorkerModel worker = await RecommendationDatabase.getRecommendedWorker("XijqsEXSqx7GX8gBMwQJ");
+    // SubServiceModel subb = await RecommendationDatabase.getRecommendedSubService("XijqsEXSqx7GX8gBMwQJ");
     setState(() {
 
     });
@@ -127,21 +132,25 @@ class _HomeTabState extends State<HomeTab> {
           Container(
             height: 200,
             //margin: EdgeInsets.symmetric(horizontal: 10),
-            child: GridView.builder(
-              itemCount: services.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1.0,
-              ),
-              itemBuilder: (context, index) {
-                return ServiceWidget(
-                  service: services[index],
-                  imagePath: services[index].imageUrl,
-                  title: services[index].title,
-                );
-              },
+            //child: ListView(
+             // children:[
+                child: GridView.builder(
+                  itemCount: services.length<8?services.length+1:8,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 1.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    return services.length!=0?index==8||index==services.length?MoreServiceWidget(service: services[0], title: services[0].title, imagePath: services[0].imageUrl):ServiceWidget(
+                      service: services[index],
+                      imagePath: services[index].imageUrl,
+                      title: services[index].title,
+                    ):Center(child: CircularProgressIndicator(),);
+                  },
+                ),
+  //  ]
             ),
-          ),
+
           const SizedBox(height: 20,),
           const Padding(
             padding: EdgeInsets.only(left:8.0),

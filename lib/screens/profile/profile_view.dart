@@ -3,11 +3,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/database/user_database.dart';
 import 'package:homero/models/user_model.dart';
+import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 
+import '../scheduled_view.dart';
 import 'edit_profile.dart';
 class ProfileView extends StatefulWidget {
   @override
@@ -36,6 +38,18 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return user==null?Center(child: CircularProgressIndicator(),):Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Profile",
+          style: TextStyle(
+            color: Color.fromARGB(255, 84, 84, 84),
+          ),
+        ),
+        leading: null,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,28 +143,33 @@ class _ProfileViewState extends State<ProfileView> {
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: InkWell(
               onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.menu_book_outlined,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text(
-                    "My orders",
-                    style: TextStyle(
+              child: InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, OrdersView.routeName);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    Icon(
+                      Icons.menu_book_outlined,
                       color: Color.fromARGB(255, 84, 84, 84),
                     ),
-                  ),
-                  SizedBox(
-                    width: 125,
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "My orders",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 84, 84, 84),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 125,
+                    ),
+                    Icon(Icons.navigate_next,
+                        color: Color.fromARGB(255, 84, 84, 84))
+                  ],
+                ),
               ),
             ),
           ),
@@ -164,7 +183,9 @@ class _ProfileViewState extends State<ProfileView> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, ScheduledOrdersView.routeName);
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
@@ -288,10 +309,16 @@ class _ProfileViewState extends State<ProfileView> {
                       //FirebaseAuth.instance.signOut();
                       //Navigator.pushReplacementNamed(context, SignInView.routeName);
                     },
-                    child: const Text(
-                      "Logout",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 84, 84, 84),
+                    child:  InkWell(
+                      onTap: (){
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushNamed(context, SignInView.routeName);
+                      },
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 84, 84, 84),
+                        ),
                       ),
                     ),
                   ),

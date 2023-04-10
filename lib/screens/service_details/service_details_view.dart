@@ -47,7 +47,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    SubServiceModel service = ModalRoute.of(context)!.settings.arguments as SubServiceModel;
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final service = args['service'] as SubServiceModel;
+    final workerName = args['workerName'] as String;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color.fromARGB(255, 240, 240, 240),
@@ -492,6 +494,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                 // },
                 onTap: () async{
                   if (formKey.currentState!.validate()) {
+                    print(workerName);
+                    print(service.cost);
+                    print(service.id);
                     OrderModel order = OrderModel(
                       cost: service.cost,
                       uId: FirebaseAuth.instance.currentUser!.uid,
@@ -503,8 +508,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                         isScheduled: isSwitched,
                         mobileNum: completeNum,
                         numOfRoom: selectedRoom,
+                        workerName:workerName,
                         scheduling: selectedSchedule);
-                    await OrderDatabase.addOrder(order);
+                    //await OrderDatabase.addOrder(order);
                     Navigator.pushNamed(
                         context, PaymentView.routeName, arguments: order);
                   }

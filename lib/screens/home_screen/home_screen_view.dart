@@ -75,22 +75,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
                     ],
                   )
-                : AppBar(
-                    backgroundColor: Colors.transparent,
-                    centerTitle: true,
-                    title: Text(
-                      names[selectedIndex],
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 84, 84, 84)),
-                    ),
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back,
-                          color: Color.fromARGB(255, 84, 84, 84)),
-                      onPressed: () => Navigator.pushReplacementNamed(
-                          context, HomeScreenView.routeName),
-                    ),
-                    elevation: 0,
-                  ),
+                : null,
             bottomNavigationBar: BottomNavigationBar(
                 selectedItemColor: const Color.fromARGB(255, 52, 205, 196),
                 type: BottomNavigationBarType.fixed,

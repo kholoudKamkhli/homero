@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../../models/order_model.dart';
 
 class OrderDetailsView extends StatelessWidget {
-  Image image;
-  String name;
-  String username;
-  OrderDetailsView({required this.name,required this.image,required this.username});
+  OrderModel order;
+  OrderDetailsView({required this.order});
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -20,7 +21,7 @@ class OrderDetailsView extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               child: SizedBox(
                   height: 128,
-                  child: image),
+                  child: Image.asset("assets/images/img_12.png")),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 5),
@@ -28,7 +29,7 @@ class OrderDetailsView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name,style: const TextStyle(
+                  Text(order.serviceName,style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color.fromARGB(255, 84, 84, 84),
@@ -36,7 +37,7 @@ class OrderDetailsView extends StatelessWidget {
                   ),),
                   const SizedBox(height: 10,),
                   Text(
-                    "By ${username}",style: TextStyle(
+                    "By ${order.workerName}",style: TextStyle(
                     color: Color.fromARGB(255, 84, 84, 84),
                     fontWeight:FontWeight.w400 ,
                     fontSize:12 ,
@@ -44,7 +45,7 @@ class OrderDetailsView extends StatelessWidget {
                   ),
                   SizedBox(height: 10,),
                   Row(
-                    children: const [
+                    children:  [
                       Text(
                         "Time ",style: TextStyle(
                         color: Color.fromARGB(255, 84, 84, 84),
@@ -53,7 +54,7 @@ class OrderDetailsView extends StatelessWidget {
                       ),
                       ),
                       Text(
-                        "10:00 AM ",style: TextStyle(
+                        "${DateFormat.Hm().format(order.date)} AM ",style: TextStyle(
                         color: Color.fromARGB(255, 126, 127, 131),
                         fontWeight:FontWeight.w400 ,
                         fontSize:12 ,
@@ -63,7 +64,7 @@ class OrderDetailsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 5,),
                   Row(
-                    children: const [
+                    children:  [
                       Text(
                         "Date ",style: TextStyle(
                         color: Color.fromARGB(255, 84, 84, 84),
@@ -72,7 +73,7 @@ class OrderDetailsView extends StatelessWidget {
                       ),
                       ),
                       Text(
-                        " 23 Jan 2023",style: TextStyle(
+                        "${DateFormat.yMMMEd().format(order.date)}",style: TextStyle(
                         color: Color.fromARGB(255, 126, 127, 131),
                         fontWeight:FontWeight.w400 ,
                         fontSize:12 ,
@@ -82,10 +83,11 @@ class OrderDetailsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10,),
                   Row(
-                    children: const [
+                    children:  [
                       Icon(Icons.location_on_outlined,size: 15,color: Color.fromARGB(
                           255, 84, 84, 84),),
-                      Text("Andria Russell.414- 73354",style: TextStyle(
+                      Text("${order.location.substring(0,40)}...",style: TextStyle(
+                        
                         color:Color.fromARGB(
                             255, 126, 127, 131),
                       ),),

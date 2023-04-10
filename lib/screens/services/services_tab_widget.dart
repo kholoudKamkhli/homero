@@ -35,7 +35,6 @@ class _ServiceTabsWidgetState extends State<ServiceTabsWidget> {
       length: services.length,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -71,28 +70,26 @@ class _ServiceTabsWidgetState extends State<ServiceTabsWidget> {
             tabs: services
                 .map((e) => ServiceTabWidget(
                       name: e.title ?? "",
-                      isSelected: selectedIndex == services.indexOf(e)
-                          ? true
-                          : false,
+                      isSelected:
+                          selectedIndex == services.indexOf(e) ? true : false,
                     ))
                 .toList(),
             isScrollable: true,
             indicatorColor: Colors.transparent,
           ),
           GridView.builder(
-            scrollDirection: Axis.vertical,
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 1.0,
-                  ),
-                  itemBuilder: (buildContext, index) {
-                    return subServices.isEmpty
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : SubServiceWidget(subservice: subServices[index]);
-                  })
+              scrollDirection: Axis.vertical,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 1.0,
+              ),
+              itemBuilder: (buildContext, index) {
+                return subServices.isEmpty
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SubServiceWidget(subservice: subServices[index]);
+              })
         ],
       ),
     );

@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 import '../../database/worker_database.dart';
 import '../service_details/service_details_view.dart';
-
+int numOfChoosenWorkers =0;
 class WorkerView extends StatefulWidget {
   static const String routeName = "Worker";
 
@@ -21,6 +21,8 @@ class WorkerView extends StatefulWidget {
 }
 
 class _WorkerViewState extends State<WorkerView> {
+  bool isSelected = false;
+  late int workerChosen ;
   static bool buttonClicked = false;
   List<WorkerModel>workers = [];
   Future<List<WorkerModel>> initWorkers(String serviceName) async {
@@ -31,8 +33,7 @@ class _WorkerViewState extends State<WorkerView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-
+    numOfChoosenWorkers = 0;
   }
   static changeColor(){
     buttonClicked = !buttonClicked;
@@ -75,8 +76,10 @@ class _WorkerViewState extends State<WorkerView> {
                 return ListView.builder(
                   itemBuilder: (_, index) {
                     return WorkerWidget(
+                      index:index,
                       worker: workers[index],
                       changecolor: onClickCallBack,
+
                     );
                   },
                   itemCount: workers.length,
@@ -102,13 +105,13 @@ class _WorkerViewState extends State<WorkerView> {
                   : Color.fromARGB(255, 84, 84, 84),
             ),
             child: InkWell(
-              // onTap: () {
-              //   buttonClicked = !buttonClicked;
-              //   setState(() {});
-              // },
+
               onTap: (){
                 if(buttonClicked == true){
-                   Navigator.pushNamed(context, ServiceDetailsView.routeName,arguments: service);
+                   Navigator.pushNamed(context, ServiceDetailsView.routeName,arguments: {
+                     'service': service,
+                     'workerName': workers[workerChosen].name,
+                   },);
                 }
               },
               child: Container(
@@ -136,7 +139,8 @@ class _WorkerViewState extends State<WorkerView> {
       ),
     );
   }
-  void onClickCallBack(bool isSelected){
+  void onClickCallBack(bool isSelected,int index){
+    workerChosen = index;
     if(isSelected == true){
       buttonClicked = true;
     }

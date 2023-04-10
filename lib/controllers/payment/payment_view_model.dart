@@ -1,17 +1,21 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:homero/controllers/base_classes/base.dart';
 import 'package:homero/controllers/payment/payment_connector.dart';
+import 'package:homero/database/order_database.dart';
 import 'package:homero/screens/payment/payment_view.dart';
 import 'package:http/http.dart' as http;
 
+import '../../models/order_model.dart';
+
 class PaymentViewModel extends BaseViewModel<PaymentConnector>{
   Map<String, dynamic>? paymentIntent;
-  Future<void> makePayment(String amount) async {
+  Future<void> makePayment(String amount, OrderModel order) async {
     try {
       paymentIntent = await createPaymentIntent(amount, 'USD');
 
@@ -26,18 +30,19 @@ class PaymentViewModel extends BaseViewModel<PaymentConnector>{
           .then((value) {});
 
       //STEP 3: Display Payment sheet
-      displayPaymentSheet();
+      displayPaymentSheet(order);
     } catch (err) {
       throw Exception(err);
     }
   }
 
-  displayPaymentSheet() async {
+  displayPaymentSheet(OrderModel order) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) {
         connector!.showMessage("Payment Successful", "Ok");
         paymentIntent = null;
         connector!.hideDialog();
+        OrderDatabase.addOrder(order);
         connector!.goToHome();
       }).onError((error, stackTrace) {
         throw Exception(error);
@@ -89,6 +94,7 @@ class PaymentViewModel extends BaseViewModel<PaymentConnector>{
   }
 
   calculateAmount(String amount) {
+    print("$amount");
     final calculatedAmout = int.parse(amount.replaceAll(RegExp(r'[^0-9]'),'')) * 100;
     return calculatedAmout.toString();
   }

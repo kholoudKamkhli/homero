@@ -44,8 +44,12 @@ class _ServicesViewState extends State<ServicesView> {
     initServices();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    //var serviceArgId= ModalRoute.of(context)?.settings?.arguments??"" as String;
+    //var sss = ServiceDatabase.getServiceById(serviceArgId.toString());
+    //var initIndex = services.indexOf(sss);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -54,11 +58,7 @@ class _ServicesViewState extends State<ServicesView> {
             color: Color.fromARGB(255, 84, 84, 84),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: null,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -112,15 +112,14 @@ class _ServicesViewState extends State<ServicesView> {
               : SizedBox(
                   height: 60,
                   child: DefaultTabController(
+                    initialIndex: 1,
                     length: services.length,
                     child: TabBar(
                       onTap: (index) async {
-                        //services = await ServiceDatabase.getMainServices();
+                        selectedIndex = index;
+                        subServices = await ServiceDatabase.getServiceSubServices(
+                            services[index].id ?? "");
                         setState(() {
-                          selectedIndex = index;
-                          // print("inside set state id is ${services[index].id}");
-                          // Future.delayed(Duration(seconds: 40));
-                          initSubService();
                         });
                       },
                       tabs: services
@@ -133,6 +132,7 @@ class _ServicesViewState extends State<ServicesView> {
                           .toList(),
                       isScrollable: true,
                       indicatorColor: Colors.transparent,
+
                     ),
                   ),
                 ),
