@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 
 import '../../models/order_model.dart';
 
-class PaymentViewModel extends BaseViewModel<PaymentConnector>{
+class PaymentViewModel extends BaseViewModel<PaymentConnector> {
   Map<String, dynamic>? paymentIntent;
   Future<void> makePayment(String amount, OrderModel order) async {
     try {
@@ -22,11 +22,10 @@ class PaymentViewModel extends BaseViewModel<PaymentConnector>{
       //STEP 2: Initialize Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntent![
-              'client_secret'], //Gotten from payment intent
-              style: ThemeMode.light,
-              merchantDisplayName: 'Ikay'))
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntent!['client_secret'], //Gotten from payment intent
+                  style: ThemeMode.light,
+                  merchantDisplayName: 'Ikay'))
           .then((value) {});
 
       //STEP 3: Display Payment sheet
@@ -95,7 +94,7 @@ class PaymentViewModel extends BaseViewModel<PaymentConnector>{
 
   calculateAmount(String amount) {
     print("$amount");
-    final calculatedAmout = int.parse(amount.replaceAll(RegExp(r'[^0-9]'),'')) * 100;
+    final calculatedAmout = int.parse(amount.replaceAll(RegExp(r'[^0-9]'), '')) * 100;
     return calculatedAmout.toString();
   }
 }

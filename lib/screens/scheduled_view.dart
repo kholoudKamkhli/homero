@@ -14,19 +14,18 @@ class ScheduledOrdersView extends StatefulWidget {
 
 class _ScheduledOrdersViewState extends State<ScheduledOrdersView> {
   List<OrderModel> orders = [];
-  initOrders()async{
-    orders = await OrderDatabase.getuserScheduledOrders(FirebaseAuth.instance.currentUser?.uid??"");
-    setState(() {
-
-    });
+  initOrders() async {
+    orders = await OrderDatabase.getuserScheduledOrders(FirebaseAuth.instance.currentUser?.uid ?? "");
+    setState(() {});
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initOrders();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,26 +37,34 @@ class _ScheduledOrdersViewState extends State<ScheduledOrdersView> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 84, 84, 84)),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
-      body: orders.isEmpty?Center(child: CircularProgressIndicator(),):Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 10,),
-          Expanded(
-            child: ListView.builder(itemBuilder: (buildContext,index){
-              return OrderDetailsView(order: orders[index]);
-            },itemCount: orders.length,),
-          )
-        ],
-      ),
+      body: orders.isEmpty
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (buildContext, index) {
+                      return OrderDetailsView(order: orders[index]);
+                    },
+                    itemCount: orders.length,
+                  ),
+                )
+              ],
+            ),
     );
   }
 }
