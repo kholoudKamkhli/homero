@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -75,8 +76,8 @@ class MyApp extends StatelessWidget {
         },
 
         //themeMode: ThemeMode.light,
-        //initialRoute: FirebaseAuth.instance.currentUser!=null?HomeScreenView.routeName:SplashScreenOne.routeName,
-        initialRoute: SignInView.routeName,
+        initialRoute: FirebaseAuth.instance.currentUser!=null?HomeScreenView.routeName:SplashScreenOne.routeName,
+        //initialRoute: SignInView.routeName,
         theme:MyTheme.lightTheme ,
         darkTheme: MyTheme.darkTheme,
         themeMode: settingsProvider.getTheme(),

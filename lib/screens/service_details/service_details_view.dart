@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_geocoder/model.dart';
-import 'package:homero/database/order_database.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/models/service_model.dart';
 import 'package:homero/screens/payment/payment_view.dart';
@@ -10,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../controllers/user_location_controller.dart';
-import '../workers/worker_view.dart';
 
 class ServiceDetailsView extends StatefulWidget {
   static const String routeName = "serviceDetails";

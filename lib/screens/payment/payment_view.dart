@@ -1,19 +1,15 @@
-import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/controllers/payment/payment_connector.dart';
 import 'package:homero/controllers/payment/payment_view_model.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/models/user_model.dart';
-import 'package:homero/screens/home_tab_screen/widgets/service_widget.dart';
 import 'package:homero/screens/map/map_screen.dart';
 import 'package:intl/intl.dart';
 
 import '../../controllers/base_classes/base.dart';
 import '../../database/user_database.dart';
-import '../home_screen/home_screen_view.dart';
 
 class PaymentView extends StatefulWidget {
   static const String routeName = "payment";

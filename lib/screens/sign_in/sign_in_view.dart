@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 import '../../controllers/auth_controllers/sign_in_controller/sign_in_connector.dart';
 import '../../controllers/auth_controllers/sign_in_controller/sign_in_view_model.dart';
 import '../../controllers/base_classes/base.dart';
-import '../../database/user_database.dart';
-import '../../models/user_model.dart';
+
 
 class SignInView extends StatefulWidget {
   static const String routeName = "SignIn";

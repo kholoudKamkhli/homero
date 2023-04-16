@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:video_player/video_player.dart';
 
 import '../sign_in/sign_in_view.dart';

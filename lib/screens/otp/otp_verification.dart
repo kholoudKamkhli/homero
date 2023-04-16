@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homero/database/user_database.dart';
-import 'package:homero/models/user_model.dart';
-import 'package:homero/screens/home_screen/home_screen_view.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../controllers/auth_controllers/otp_view_model.dart';

@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../database/service_database.dart';
 import '../../models/service_model.dart';
 import '../home_screen/home_screen_view.dart';
-import '../home_tab_screen/widgets/service_widget.dart';
 
 class ServicesView extends StatefulWidget {
   static const String routeName = "ServicesView";

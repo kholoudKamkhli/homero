@@ -1,16 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/database/user_database.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/orders/orders_view.dart';
-import 'package:homero/screens/payment/payment_view.dart';
 import 'package:homero/screens/profile/payment_history.dart';
-import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'scheduled_view.dart';
