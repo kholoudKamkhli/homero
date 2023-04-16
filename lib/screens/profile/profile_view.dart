@@ -3,21 +3,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/database/user_database.dart';
 import 'package:homero/models/user_model.dart';
+import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/orders/orders_view.dart';
+import 'package:homero/screens/payment/payment_view.dart';
+import 'package:homero/screens/profile/payment_history.dart';
 import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../scheduled_view.dart';
+import 'scheduled_view.dart';
 import 'edit_profile.dart';
 class ProfileView extends StatefulWidget {
+  static const String routeName = "Profile";
   @override
   State<ProfileView> createState() => _ProfileViewState();
 }
 
 class _ProfileViewState extends State<ProfileView> {
   MyUser ? user;
+  var image;
   @override
   void initState(){
     // TODO: implement initState
@@ -29,6 +35,12 @@ class _ProfileViewState extends State<ProfileView> {
     print("we are initting user");
     print(FirebaseAuth.instance.currentUser!.uid);
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+    if(user!.imageUrl==""){
+      image = AssetImage("assets/images/img_10.png");
+    }
+    else{
+      image = NetworkImage(user!.imageUrl);
+    }
     setState(() {
 
     });
@@ -40,298 +52,293 @@ class _ProfileViewState extends State<ProfileView> {
     return user==null?Center(child: CircularProgressIndicator(),):Scaffold(
       appBar: AppBar(
         title: Text(
-          "Profile",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          AppLocalizations.of(context)!.profile,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+
         ),
-        leading: null,
-        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon:  Icon(Icons.arrow_back,
+              ),
+          onPressed: () => Navigator.pushReplacementNamed(context, HomeScreenView.routeName),
+        ),
         elevation: 0,
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            height: 100,
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(user!.imageUrl == ""
-                  ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
-                  : user!.imageUrl),
+      body: SingleChildScrollView(
 
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              height: 100,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: image,
+
+              ),
+              ),
+            const SizedBox(
+              height: 20,
             ),
-            ),
-          const SizedBox(
-            height: 20,
-          ),
-           Text(
-            user!.username,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          InkWell(
-            onTap: (){
-              Navigator.pushNamed(context, EditProfile.routeName);
-            },
-            child: const Text(
-              "Edit Profile",
+             Text(
+              user!.username,
               style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  color: Color.fromARGB(255, 126, 127, 131),
-                  fontSize: 16),
-            ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Container(
-            width: 328,
-            height: 1,
-            decoration:const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
-            ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Padding(
-            padding:const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                     Icons.notifications_none,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Notifications",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 84, 84, 84),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 115,
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
               ),
             ),
-          ),
-          Container(
-            width: 270,
-            height: 1,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
+            const SizedBox(
+              height: 10,
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {},
-              child: InkWell(
-                onTap: (){
-                  Navigator.pushNamed(context, OrdersView.routeName);
-                },
+            InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, EditProfile.routeName);
+              },
+              child:  Text(
+                AppLocalizations.of(context)!.edit_profile,
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Color.fromARGB(255, 126, 127, 131),
+                    fontSize: 16),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Container(
+              width: 328,
+              height: 1,
+              decoration:const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            InkWell(
+              onTap: (){},
+              child: Padding(
+                padding:const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    Icon(
+                       Icons.notifications_none,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+                      child: Text(
+                        AppLocalizations.of(context)!.notifications,
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
+                    ),
+                    Icon(Icons.navigate_next,
+                        color: Theme.of(context).textTheme.displayMedium!.color)
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 270,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
+            ),
+            InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, OrdersView.routeName);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children:  [
                     Icon(
                       Icons.menu_book_outlined,
-                      color: Color.fromARGB(255, 84, 84, 84),
+                      color: Theme.of(context).textTheme.displayMedium!.color,
                     ),
                     SizedBox(
-                      width: 15,
+                      width: 10,
                     ),
-                    Text(
-                      "My orders",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 84, 84, 84),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+                      child: Text(
+                        AppLocalizations.of(context)!.my_orders,
+                        style: Theme.of(context).textTheme.displayMedium,
+
                       ),
                     ),
-                    SizedBox(
-                      width: 125,
-                    ),
                     Icon(Icons.navigate_next,
-                        color: Color.fromARGB(255, 84, 84, 84))
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    )
                   ],
                 ),
               ),
             ),
-          ),
-          Container(
-            width: 270,
-            height: 1,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
+            Container(
+              width: 270,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {
+            InkWell(
+              onTap: (){
                 Navigator.pushNamed(context, ScheduledOrdersView.routeName);
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.library_books,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Schedule",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 84, 84, 84),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    Icon(
+                      Icons.library_books,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+
                     ),
-                  ),
-                  SizedBox(
-                    width: 130,
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: 270,
-            height: 1,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.wallet,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Wallet",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 84, 84, 84),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
-                  SizedBox(
-                    width: 150,
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: 270,
-            height: 1,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.payment,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Payment",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 84, 84, 84),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 130,
-                  ),
-                  Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
-              ),
-            ),
-          ),
-          Container(
-            width: 270,
-            height: 1,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 126, 127, 131),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: InkWell(
-              onTap: () {},
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.logout,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  InkWell(
-                    onTap:(){
-                      //FirebaseAuth.instance.signOut();
-                      //Navigator.pushReplacementNamed(context, SignInView.routeName);
-                    },
-                    child:  InkWell(
-                      onTap: (){
-                        FirebaseAuth.instance.signOut();
-                        Navigator.pushNamed(context, SignInView.routeName);
-                      },
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+
                       child: Text(
-                        "Logout",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 84, 84, 84),
-                        ),
+                        AppLocalizations.of(context)!.schedule,
+                        style: Theme.of(context).textTheme.displayMedium,
+
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 145,
-                  ),
-                  const Icon(Icons.navigate_next,
-                      color: Color.fromARGB(255, 84, 84, 84))
-                ],
+                    Icon(Icons.navigate_next,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            Container(
+              width: 270,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
+            ),
+            InkWell(
+              onTap: (){
+
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    Icon(
+                      Icons.wallet,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+
+                      child: Text(
+                        AppLocalizations.of(context)!.wallet,
+                        style: Theme.of(context).textTheme.displayMedium,
+
+                      ),
+                    ),
+                    Icon(Icons.navigate_next,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 270,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, PaymentHistory.routeName);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    Icon(
+                      Icons.payment,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+
+                      child: Text(
+                        AppLocalizations.of(context)!.payment,
+                        style: Theme.of(context).textTheme.displayMedium,
+
+                      ),
+                    ),
+
+                    Icon(Icons.navigate_next,
+                        color: Theme.of(context).textTheme.displayMedium!.color)
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 270,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 126, 127, 131),
+              ),
+            ),
+            InkWell(
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                     Icon(
+                      Icons.logout,
+                      color: Theme.of(context).textTheme.displayMedium!.color,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.5,
+
+                      child: Text(
+
+                        AppLocalizations.of(context)!.logout,
+                        style: Theme.of(context).textTheme.displayMedium,
+
+                      ),
+                    ),
+                     Icon(Icons.navigate_next,
+                        color: Theme.of(context).textTheme.displayMedium!.color)
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

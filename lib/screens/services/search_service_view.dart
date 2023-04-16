@@ -8,16 +8,14 @@ class SearchServiceView extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Services",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
               color: Color.fromARGB(255, 84, 84, 84)),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),

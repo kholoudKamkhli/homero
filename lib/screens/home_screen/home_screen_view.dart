@@ -8,6 +8,7 @@ import 'package:homero/screens/settings/settings_view.dart';
 
 import '../../database/user_database.dart';
 import '../home_tab_screen/home_tab.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreenView extends StatefulWidget {
   static const String routeName = "homeScreen";
@@ -19,9 +20,16 @@ class HomeScreenView extends StatefulWidget {
 class _HomeScreenViewState extends State<HomeScreenView> {
   int selectedIndex = 2;
   MyUser? user;
+  var image;
 
   initUser() async {
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+    if(user!.imageUrl==""){
+      image = AssetImage("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg");
+    }
+    else{
+      image = NetworkImage(user!.imageUrl);
+    }
     setState(() {});
   }
 
@@ -39,10 +47,9 @@ class _HomeScreenViewState extends State<HomeScreenView> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: selectedIndex == 2
                 ? AppBar(
-                    backgroundColor: Colors.white,
                     elevation: 0,
                     title: Image.asset(
                       "assets/images/img.png",
@@ -52,66 +59,62 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                     centerTitle: false,
                     actions: [
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.notifications_none,
-                          color: Colors.black,
+                          color: Theme.of(context).iconTheme.color,
                         ),
                         onPressed: () {
-                          // do something
                         },
                       ),
                       IconButton(
                         icon: CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(user!.imageUrl == ""
-                              ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
-                              : user!.imageUrl),
+                          backgroundImage: image,
                         ),
                         color: Color.fromARGB(255, 52, 205, 196),
                         onPressed: () {
-                          // do something
+                          Navigator.pushNamed(context, ProfileView.routeName);
                         },
-                      )
-
+                      ),
                     ],
+              automaticallyImplyLeading: false,
                   )
                 : null,
             bottomNavigationBar: BottomNavigationBar(
-                selectedItemColor: const Color.fromARGB(255, 52, 205, 196),
+                //selectedItemColor: const Color.fromARGB(255, 52, 205, 196),
                 type: BottomNavigationBarType.fixed,
-                backgroundColor: const Color.fromARGB(255, 217, 217, 217),
+                //backgroundColor: const Color.fromARGB(255, 217, 217, 217),
                 onTap: (selected) {
                   setState(() {
                     selectedIndex = selected;
                   });
                 },
                 currentIndex: selectedIndex,
-                items: const [
+                items:  [
                   BottomNavigationBarItem(
-                    backgroundColor: Color.fromARGB(255, 217, 217, 217),
-                    //backgroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
                     icon: ImageIcon(AssetImage("assets/images/img_13.png")),
-                    label: "profile",
+                    label: AppLocalizations.of(context)!.profile,
                   ),
                   BottomNavigationBarItem(
                     //backgroundColor: Color.fromARGB(255, 217, 217, 217),
                     icon: ImageIcon(AssetImage("assets/images/img_14.png")),
-                    label: "Orders",
+                    label: AppLocalizations.of(context)!.orders,
                   ),
                   BottomNavigationBarItem(
-                    backgroundColor: Color.fromARGB(255, 217, 217, 217),
+                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
                     icon: Icon(Icons.home),
-                    label: "Home",
+                    label: AppLocalizations.of(context)!.home,
                   ),
                   BottomNavigationBarItem(
-                    backgroundColor: Color.fromARGB(255, 217, 217, 217),
+                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
                     icon: ImageIcon(AssetImage("assets/images/img_15.png")),
-                    label: "Services",
+                    label: AppLocalizations.of(context)!.services,
                   ),
                   BottomNavigationBarItem(
-                    backgroundColor: Color.fromARGB(255, 217, 217, 217),
+                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
                     icon: ImageIcon(AssetImage("assets/images/img_16.png")),
-                    label: "Settings",
+                    label: AppLocalizations.of(context)!.settings,
                   ),
                 ]),
             body: tabs[selectedIndex],

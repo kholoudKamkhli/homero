@@ -1,16 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:homero/database/service_database.dart';
 import 'package:homero/models/service_model.dart';
-import 'package:homero/screens/workers/worker_view.dart';
-
 import '../../../database/recommendation_database.dart';
-import '../../../database/user_database.dart';
 import '../../../models/reccomendation_model.dart';
-import '../../../models/user_model.dart';
 import '../../../models/worker_model.dart';
 import '../../service_details/service_details_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecommendedWidget extends StatefulWidget {
   RecommendationModel recommendationModel;
@@ -94,17 +89,17 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(worker!.latestReview,style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black54),),
+                  child: Text(worker!.latestReview,style:Theme.of(context).textTheme.bodySmall,),
                 ),
                 Row(children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
+                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0,vertical: 8),
-                        child: Text("Rate",style: TextStyle(fontWeight: FontWeight.w400,fontSize: 12,color: Colors.black),),
-                      ),
+                        child: Text("Rate",style:Theme.of(context).textTheme.bodySmall,),),
+
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: RatingBar.builder(
@@ -143,7 +138,7 @@ class _RecommendedWidgetState extends State<RecommendedWidget> {
                           color: const Color.fromARGB(255, 52, 205, 196),
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: const Text("Order Now",style: TextStyle(
+                        child:  Text(AppLocalizations.of(context)!.order_now,style: TextStyle(
                           color: Colors.
                             white
                         ),),

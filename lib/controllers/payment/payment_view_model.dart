@@ -41,7 +41,7 @@ class PaymentViewModel extends BaseViewModel<PaymentConnector> {
         connector!.showMessage("Payment Successful", "Ok");
         paymentIntent = null;
         connector!.hideDialog();
-        OrderDatabase.addOrder(order);
+        //OrderDatabase.addOrder(order);
         connector!.goToHome();
       }).onError((error, stackTrace) {
         throw Exception(error);

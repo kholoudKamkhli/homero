@@ -14,19 +14,17 @@ class WorkerDatabase {
   
   static Future<List<WorkerModel>> getWorkersss(String serviceName) async {
     var querySnapshot = await getWorkersCollection().where('serviceName',isEqualTo: serviceName).get();
-    print("service size ${querySnapshot.size}");
-    print("service name $serviceName");
-    print("hfghghg ${querySnapshot.docs.map((doc)=>doc.data()).toList()}");
+
     return querySnapshot.docs.map((doc)=>doc.data()).toList();
   }
   static Future<List<WorkerModel>> getWorkers(String serviceName)async{
-    print('id inside getSubServices $serviceName');
-
     final snapshot = await getWorkersCollection().get();
     List<WorkerModel>workers =  snapshot.docs
         .map((doc) => doc.data()).toList();
      print(workers.length);
-    return workers;
+    List<WorkerModel> filteredWorkers =
+    workers.where((worker) => worker.serviceName==serviceName).toList();
+    return filteredWorkers;
   }
 
 }

@@ -45,7 +45,7 @@ class SignInViewModel extends BaseViewModel<SignInConnector>{
     // Create a credential from the access token
     final OAuthCredential facebookAuthCredential =
     FacebookAuthProvider.credential(loginResult.accessToken!.token);
-    //UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
+    UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"");
     if(!await UserDatabase.check(FirebaseAuth.instance.currentUser?.uid??"")){
       MyUser user = MyUser(id: FirebaseAuth.instance.currentUser?.uid??"", username: FirebaseAuth.instance.currentUser?.displayName??"", email: FirebaseAuth.instance.currentUser?.email??"", phoneNum: FirebaseAuth.instance.currentUser?.phoneNumber??"");
       if(user.imageUrl==""){
@@ -53,6 +53,7 @@ class SignInViewModel extends BaseViewModel<SignInConnector>{
       }
       UserDatabase.addUserToDatabase(user);
     }
+
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }

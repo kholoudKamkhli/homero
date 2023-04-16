@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/home_tab_screen/widgets/service_elements.dart';
 import 'package:homero/screens/service_details/service_details_view.dart';
+import 'package:homero/screens/services/selected_service_view.dart';
 
 import '../../../models/service_model.dart';
 import '../../services/services_view.dart';
@@ -17,9 +18,10 @@ class ServiceWidget extends StatelessWidget {
     
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, ServicesView.routeName,arguments: service.id);
+        Navigator.pushNamed(context, SelectedServiceView.routeName,arguments: service);
       },
       child: Card(
+        color: Theme.of(context).cardTheme.color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -44,9 +46,7 @@ class ServiceWidget extends StatelessWidget {
                 padding: EdgeInsets.only(top: 2),
                 child: Text(
                   title,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
                 ),
               ),
             ],

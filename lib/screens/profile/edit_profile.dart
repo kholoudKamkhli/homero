@@ -7,7 +7,7 @@ import 'package:homero/shared/dialog_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../database/user_database.dart';
-import 'package:location/location.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 class EditProfile extends StatefulWidget {
   static const String routeName = "editProfile";
@@ -17,6 +17,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  var image;
   UserLocationController locationController = UserLocationController();
   var usernameCont = TextEditingController();
   var mailCont = TextEditingController();
@@ -40,6 +41,12 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> initUser() async {
     print(FirebaseAuth.instance.currentUser!.uid);
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
+    if(user!.imageUrl==""){
+      image = AssetImage("assets/images/img_10.png");
+    }
+    else{
+      image = NetworkImage(user!.imageUrl);
+    }
     setState(() {});
   }
 
@@ -58,6 +65,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future getImage() async {
     var image = await _picker.pickImage(source: ImageSource.gallery);
+
     _image = image;
     print(_image?.path ?? "null path");
     if (_image != null) {
@@ -80,17 +88,15 @@ class _EditProfileState extends State<EditProfile> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          "Edit Profile",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          AppLocalizations.of(context)!.edit_profile,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
+              ),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
@@ -120,9 +126,7 @@ class _EditProfileState extends State<EditProfile> {
                           children: [
                             CircleAvatar(
                               radius: 50,
-                              backgroundImage: NetworkImage(user!.imageUrl == ""
-                                  ? "assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg"
-                                  : user!.imageUrl),
+                              backgroundImage: image,
 
                             ),
                             Positioned(
@@ -141,9 +145,9 @@ class _EditProfileState extends State<EditProfile> {
                       height: 20,
                     ),
                     Container(
-                      alignment: Alignment.topLeft,
-                      child: const Text(
-                        "Click for edit",
+                      alignment: Alignment.center,
+                      child:  Text(
+                        AppLocalizations.of(context)!.click_to_edit,
                         style: TextStyle(
                           color: Color.fromARGB(255, 126, 127, 131),
                           fontSize: 12,
@@ -191,7 +195,7 @@ class _EditProfileState extends State<EditProfile> {
                             color: Colors.grey,
                             fontSize: 12,
                           ),
-                          labelText: "Full Name ",
+                         // hint: user!.username,
                           labelStyle: TextStyle(
                               color: usernameFocus.hasFocus
                                   ? Colors.tealAccent
@@ -252,7 +256,7 @@ class _EditProfileState extends State<EditProfile> {
                             color: Colors.grey,
                             fontSize: 12,
                           ),
-                          labelText: "Email",
+                          //labelText: "Email",
                           labelStyle: TextStyle(
                               color: mailFocus.hasFocus
                                   ? Colors.tealAccent
@@ -306,12 +310,12 @@ class _EditProfileState extends State<EditProfile> {
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
-                          hintText: user!.phoneNum ?? "",
+                          hintText: user!.phoneNum ?? "Phone Number",
                           hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
-                          labelText: "Phone Number",
+                          //labelText: "Phone Number",
                           labelStyle: TextStyle(
                               color: phoneFocus.hasFocus
                                   ? Colors.tealAccent
@@ -344,7 +348,7 @@ class _EditProfileState extends State<EditProfile> {
                           try{
                             await FirebaseAuth.instance
                                 .sendPasswordResetEmail(email: user!.email);
-                            MyDialogUtils.showMessage(context, "A password reset mail has been sent tp your email please redirect there to continue resetting your password", "Ok");
+                            MyDialogUtils.showAnotherMessage(context, "Activation message has been sent to your mail", "Ok");
                           }
                           catch(e){
 
@@ -363,7 +367,7 @@ class _EditProfileState extends State<EditProfile> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0,bottom: 8),
-                              child: Text(".............",style: TextStyle(
+                              child: Text("..........",style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 22,
                                 fontWeight: FontWeight.w800,
@@ -409,12 +413,12 @@ class _EditProfileState extends State<EditProfile> {
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
-                          hintText: "location",
+                          hintText: user!.address??"location",
                           hintStyle: TextStyle(
                             color: Colors.grey,
-                            fontSize: 18,
+                            fontSize: 14,
                           ),
-                          labelText: "Location",
+                          //labelText: "Location",
                           labelStyle: TextStyle(
                               color: locationFocus.hasFocus
                                   ? Colors.tealAccent

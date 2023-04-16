@@ -80,12 +80,10 @@ class ServiceDatabase {
     return subServices;
   }
   static Future<List<ServiceModel>> searchServiceByTitle(String title) async {
-    title  = capitalize(title);
     List<ServiceModel> searchResults = [];
-
     final snapshot = await FirebaseFirestore.instance
         .collection(ServiceModel.COLLECTION_NAME)
-        .where("title", isGreaterThanOrEqualTo: title).where("title", isLessThanOrEqualTo: "$title\uf7ff")
+        .where("title", isEqualTo: title)
         .get();
 
     if (snapshot.docs.isNotEmpty) {
@@ -95,7 +93,15 @@ class ServiceDatabase {
         searchResults.add(service);
       });
     }
-
+    print("Search result ${searchResults[0]}");
     return searchResults;
+  }
+  static searchServiceByTitle2(String title)async{
+    var snapshot = await getServicesCollection().get();
+    List<dynamic> services = snapshot.docs
+        .where((doc) => doc.data().title == title)
+        .map((doc) => doc.data()).toList();
+    print(services.length);
+    return services;
   }
 }

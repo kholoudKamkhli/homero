@@ -9,7 +9,7 @@ class OrderTabWidget extends StatelessWidget{
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 3),
       child: Text(name,style: TextStyle(
-        color: isSelected?Color.fromARGB(255, 84, 84, 84):Color.fromARGB(
+        color: isSelected?Theme.of(context).textTheme.bodySmall!.color:Color.fromARGB(
             255, 126, 127, 131),
         fontSize: 15,
         fontWeight: isSelected?FontWeight.w600:FontWeight.w400,

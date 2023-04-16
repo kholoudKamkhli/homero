@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:homero/database/order_database.dart';
 import 'package:homero/screens/orders/widgets/order_details_view.dart';
 
-import '../models/order_model.dart';
+import '../../models/order_model.dart';
+
 
 class ScheduledOrdersView extends StatefulWidget {
   static const String routeName = "ScheduledOrders";

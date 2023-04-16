@@ -38,9 +38,7 @@ class SubServiceWidget extends StatelessWidget {
                 padding: EdgeInsets.only(top: 2),
                 child: Text(
                   subservice.title,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                    style: Theme.of(context).textTheme.bodyMedium
                 ),
               ),
             ],

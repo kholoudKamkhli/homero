@@ -43,20 +43,17 @@ class _WorkerViewState extends State<WorkerView> {
   Widget build(BuildContext context) {
     SubServiceModel service = ModalRoute.of(context)!.settings.arguments as SubServiceModel;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
         title: Text(
           "Workers",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
+          icon:  Icon(Icons.arrow_back,
+              ),
           onPressed: () => Navigator.pop(context),
         ),
       ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:homero/screens/home_tab_screen/widgets/sub_service_widget.dart';
 import 'package:homero/screens/services/service_tab_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../database/service_database.dart';
 import '../../models/service_model.dart';
+import '../home_screen/home_screen_view.dart';
 import '../home_tab_screen/widgets/service_widget.dart';
 
 class ServicesView extends StatefulWidget {
@@ -18,7 +19,7 @@ class _ServicesViewState extends State<ServicesView> {
   List<SubServiceModel> subServices = [];
   String? searchService;
   int selectedIndex = 0;
-  List<SubServiceModel>searchServices = [];
+  List<SubServiceModel> searchServices = [];
 
   initSubService() async {
     subServices = await ServiceDatabase.getServiceSubServices(
@@ -27,6 +28,7 @@ class _ServicesViewState extends State<ServicesView> {
 
   initServices() async {
     services = await ServiceDatabase.getMainServices();
+
     Future.delayed(Duration(seconds: 40));
     subServices = await ServiceDatabase.getServiceSubServices(
         services[selectedIndex].id ?? "");
@@ -44,22 +46,21 @@ class _ServicesViewState extends State<ServicesView> {
     initServices();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    //var serviceArgId= ModalRoute.of(context)?.settings?.arguments??"" as String;
-    //var sss = ServiceDatabase.getServiceById(serviceArgId.toString());
-    //var initIndex = services.indexOf(sss);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Services",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          AppLocalizations.of(context)!.services,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
-        leading: null,
-        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, HomeScreenView.routeName),
+        ),
         elevation: 0,
         centerTitle: true,
       ),
@@ -78,19 +79,21 @@ class _ServicesViewState extends State<ServicesView> {
                 ),
                 elevation: 4,
                 child: TextFormField(
-                  onChanged: (value)async{
+                  onChanged: (value) async {
                     searchService = value;
-                    searchServices = await ServiceDatabase.getAllSubServices(value);
+                    searchServices =
+                        await ServiceDatabase.getAllSubServices(value);
                     setState(() {
-                    print("onChanged value $searchService");
+                      print("onChanged value $searchService");
                     });
                   },
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.search,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: "What Services Are You Looking For?",
+                      hintStyle: Theme.of(context).textTheme.bodyMedium,
+                      hintText: AppLocalizations.of(context)!.search_bar,
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(12),
@@ -112,15 +115,15 @@ class _ServicesViewState extends State<ServicesView> {
               : SizedBox(
                   height: 60,
                   child: DefaultTabController(
-                    initialIndex: 1,
+                    initialIndex: selectedIndex,
                     length: services.length,
                     child: TabBar(
                       onTap: (index) async {
                         selectedIndex = index;
-                        subServices = await ServiceDatabase.getServiceSubServices(
-                            services[index].id ?? "");
-                        setState(() {
-                        });
+                        subServices =
+                            await ServiceDatabase.getServiceSubServices(
+                                services[index].id ?? "");
+                        setState(() {});
                       },
                       tabs: services
                           .map((e) => ServiceTabWidget(
@@ -132,27 +135,27 @@ class _ServicesViewState extends State<ServicesView> {
                           .toList(),
                       isScrollable: true,
                       indicatorColor: Colors.transparent,
-
                     ),
                   ),
                 ),
 
           searchService != null
               ? Expanded(
-            child: searchServices.length == 0
-                ? Center(
-              child: Text("No matched results"),
-            )
-                : GridView.builder(
-              itemBuilder: (buildContext, index) {
-                return SubServiceWidget(subservice: searchServices[index]);
-              },
-              itemCount: searchServices.length,
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4),
-            ),
-          )
+                  child: searchServices.length == 0
+                      ? Center(
+                          child: Text("No matched results"),
+                        )
+                      : GridView.builder(
+                          itemBuilder: (buildContext, index) {
+                            return SubServiceWidget(
+                                subservice: searchServices[index]);
+                          },
+                          itemCount: searchServices.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4),
+                        ),
+                )
               : Expanded(
                   child: subServices.length == 0
                       ? Center(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:homero/screens/otp/otp_verification.dart';
+import 'package:homero/shared/dialog_utils.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../controllers/auth_controllers/sign_up_controller/sign_un_view_model.dart';
 import '../../controllers/auth_controllers/sign_up_controller/sign_up_connector.dart';
 import '../../controllers/base_classes/base.dart';
 import '../home_screen/home_screen_view.dart';
+import '../sign_in/sign_in_view.dart';
 class SignUpView extends StatefulWidget {
   static const String routeName = "SignUp";
 
@@ -21,6 +23,7 @@ class _SignUpViewState extends BaseView<SignUpViewModel,SignUpView>implements Si
   var numberCont = TextEditingController();
   var nameCont = TextEditingController();
   var completeNum;
+  bool validationError = false;
 
   bool valuefirst = false;
 
@@ -286,13 +289,18 @@ class _SignUpViewState extends BaseView<SignUpViewModel,SignUpView>implements Si
                       ),
                     ),
                   ),
-                  const Text(
-                    "Sign In",
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromARGB(255, 84, 84, 84)),
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, SignInView.routeName);
+                    },
+                    child: const Text(
+                      "Sign In",
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Color.fromARGB(255, 84, 84, 84)),
+                    ),
                   ),
                   Row(
                     //crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,10 +326,10 @@ class _SignUpViewState extends BaseView<SignUpViewModel,SignUpView>implements Si
                             .of(context)
                             .size
                             .width * 0.6,
-                        child: const Text(
+                        child:  Text(
                           "By creating your account on Homero agree to the Terms of Uses, Conditions & Privacy Policies",
                           style: TextStyle(
-                            color: Color.fromARGB(255, 84, 84, 84),
+                            color: validationError?Colors.red:Color.fromARGB(255, 84, 84, 84),
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                           ),
@@ -412,26 +420,42 @@ class _SignUpViewState extends BaseView<SignUpViewModel,SignUpView>implements Si
   }
 
   void sinInWithPhone() async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: completeNum,
-      timeout: const Duration(seconds: 120),
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        Navigator.of(context).push(PageRouteBuilder(
-            pageBuilder: (_, __, ___) =>
-                OTPVerificstion(verificationId: verificationId,
-                  mail: emailCont.text,
-                  password: passwordCont.text,phone:numberCont.text,username:completeNum)));
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-  }
+    var message = "";
+      MyDialogUtils.showLoadingDialog(context, "Loading...");
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: completeNum,
+        timeout: const Duration(seconds: 120),
+        verificationCompleted: (PhoneAuthCredential credential) {
+        },
+        verificationFailed: (FirebaseAuthException e) {
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          Navigator.of(context).push(PageRouteBuilder(
+              pageBuilder: (_, __, ___) =>
+                  OTPVerificstion(verificationId: verificationId,
+                      mail: emailCont.text,
+                      password: passwordCont.text,phone:completeNum.text,username:nameCont.text)));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+        },
+      ).onError((error, stackTrace){
+        MyDialogUtils.showMessage(context, "Error has occured $error", "Ok");
+      }).whenComplete((){
+        MyDialogUtils.hideDialog(context);
+        MyDialogUtils.showMessage(context, "You will be redirected to web page", "Ok");
+      });
+    }
 
   void validateForm() {
-    if (formKey.currentState!.validate()) {
-      sinInWithPhone();
-    }
+    if (formKey.currentState!.validate()&&valuesecond) {
+        validationError=false;
+        sinInWithPhone();}
+      else{
+        validationError=true;
+        setState(() {
+
+        });
+      }
   }
 
   @override

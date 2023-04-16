@@ -5,8 +5,7 @@ import 'package:homero/models/order_model.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/orders/widgets/oder_tab_widget.dart';
 import 'package:homero/screens/orders/widgets/order_details_view.dart';
-import 'package:homero/screens/orders/widgets/orders_tab_widget.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'widgets/order_widget.dart';
 
 class OrdersView extends StatefulWidget {
@@ -16,11 +15,11 @@ class OrdersView extends StatefulWidget {
 }
 
 class _OrdersViewState extends State<OrdersView> {
-  List<OrderWidget> ordersType = [
-    OrderWidget(name: "All"),
-    OrderWidget(name: "Scheduled"),
-    OrderWidget(name: "Finished"),
-  ];
+  // List<OrderWidget> ordersType = [
+  //   OrderWidget(name: "All"),
+  //   OrderWidget(name: "Scheduled"),
+  //   OrderWidget(name: "Finished"),
+  // ];
 
   List<OrderModel> orders = [];
 
@@ -33,7 +32,6 @@ class _OrdersViewState extends State<OrdersView> {
 
     });
     print(orders.length);
-    print(orders[1].workerName);
   }
 
   @override
@@ -46,16 +44,22 @@ class _OrdersViewState extends State<OrdersView> {
 
   @override
   Widget build(BuildContext context) {
+    List<OrderWidget> ordersType = [
+      OrderWidget(name: AppLocalizations.of(context)!.all),
+      OrderWidget(name: AppLocalizations.of(context)!.schedule),
+      OrderWidget(name: AppLocalizations.of(context)!.finished),
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Orders",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          AppLocalizations.of(context)!.orders,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
-        leading: null,
-        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back,
+              ),
+          onPressed: () => Navigator.pushReplacementNamed(context, HomeScreenView.routeName),
+        ),
         elevation: 0,
         centerTitle: true,
       ),

@@ -48,7 +48,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
      //    widget.changecolor();
      //  },
       child: Card(
-        color: isSelected==false?Colors.white:Color.fromARGB(255, 52, 205, 196),
+        color: isSelected==false?Theme.of(context).cardTheme.color:Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

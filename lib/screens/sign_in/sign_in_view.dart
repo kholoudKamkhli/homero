@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,7 @@ import '../../database/user_database.dart';
 import '../../models/user_model.dart';
 
 class SignInView extends StatefulWidget {
-  static const String routeName = "SignUp";
+  static const String routeName = "SignIn";
 
   @override
   State<SignInView> createState() => _SignInViewState();
@@ -75,7 +74,7 @@ class _SignInViewState extends BaseView<SignInViewModel,SignInView>implements Si
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignInViewModel>(
-      create: (_)=>SignInViewModel(),
+      create: (_)=>viewModel,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Stack(
@@ -270,6 +269,7 @@ class _SignInViewState extends BaseView<SignInViewModel,SignInView>implements Si
                                     try{
                                       await viewModel.signInWithFacebook();
                                       if(FirebaseAuth.instance.currentUser!=null){
+                                        print("already signed in ");
                                         Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
                                       }
                                     }
@@ -278,19 +278,19 @@ class _SignInViewState extends BaseView<SignInViewModel,SignInView>implements Si
                                     }
                                   },
                                   icon: Image.asset("assets/images/img_19.png")),
-                              IconButton(
-                                  onPressed: () async{
-                                    try{
-                                      await viewModel.signInWithGoogle();
-                                      if(FirebaseAuth.instance.currentUser!=null){
-                                        Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+                                IconButton(
+                                    onPressed: () async{
+                                      try{
+                                        await viewModel.signInWithGoogle();
+                                        if(FirebaseAuth.instance.currentUser!=null){
+                                          Navigator.pushReplacementNamed(context, HomeScreenView.routeName);
+                                        }
                                       }
-                                    }
-                                    catch(e){
+                                      catch(e){
 
-                                    }
-                                  },
-                                  icon: Image.asset("assets/images/img_21.png")),
+                                      }
+                                    },
+                                    icon: Image.asset("assets/images/img_21.png")),
                               IconButton(
                                   onPressed: () {},
                                   icon: Image.asset("assets/images/img_20.png")),

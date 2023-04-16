@@ -52,20 +52,18 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
     final workerName = args['workerName'] as String;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color.fromARGB(255, 240, 240, 240),
+
       appBar: AppBar(
         title: Text(
-          "Deep cleaning service",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          service.title,
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+
         ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
+              ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -85,6 +83,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                     height: 70,
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
+                      color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.black45)),
                     child: Column(
@@ -132,8 +131,8 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                     height: 10,
                   ),
                   Container(
-                    padding: EdgeInsets.only(bottom: 8, right: 5),
-                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(bottom: 8, right: 5,top: 12),
+                    alignment: Alignment.bottomCenter,
                     margin: EdgeInsets.symmetric(horizontal: 50, vertical: 8),
                     width: 327,
                     height: 70,
@@ -141,24 +140,34 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Color.fromARGB(255, 126, 127,
                           131)),
+                      color: Colors.white
                     ),
-                    child: IntlPhoneField(
-                      controller: numCont,
-                      validator: (value) {
-                        if (value == null) {
-                          return "Please enter valid name";
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Phone Number',
-                        border: InputBorder.none,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 12),
+                      child: IntlPhoneField(
+                        controller: numCont,
+                        validator: (value) {
+                          if (value == null) {
+                            return "Please enter valid name";
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          helperStyle: TextStyle(
+                            color: Colors.grey
+                          ),
+                          hintStyle: TextStyle(
+
+                          ),
+                          hintText: 'Phone Number',
+                          border: InputBorder.none,
+                        ),
+                        initialCountryCode: 'IN',
+                        onChanged: (phone) {
+                          completeNum = phone.completeNumber;
+                        },
                       ),
-                      initialCountryCode: 'IN',
-                      onChanged: (phone) {
-                        completeNum = phone.completeNumber;
-                      },
                     ),
                   ),
                   SizedBox(

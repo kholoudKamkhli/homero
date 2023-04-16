@@ -16,7 +16,7 @@ class MyDialogUtils{
       barrierDismissible: isDismissible,
     );
   }
-  static void showMessage(BuildContext context , String Message , String posActionButton,{String negativeActionButton = '',VoidCallback? posAction, VoidCallback? negAction}){
+  static void showMessage(BuildContext context , String Message , String posActionButton,{VoidCallback? posAction}){
     List<Widget>actions = [];
     if(posActionButton!=null){
       actions.add(TextButton(
@@ -29,17 +29,7 @@ class MyDialogUtils{
         },
       ));
     }
-    if(negativeActionButton!=null){
-      actions.add(TextButton(
-        child: Text(negativeActionButton),
-        onPressed: (){
-          hideDialog(context);
-          if(negAction!=null){
-            negAction();
-          }
-        },
-      ));
-    }
+
     showDialog(context: context, builder: (BuildContext){
       barrierDismissible: true;
       return AlertDialog(
@@ -52,7 +42,9 @@ class MyDialogUtils{
     List<Widget>actions = [];
     if(posActionButton!=null){
       actions.add(TextButton(
-        child: Text(posActionButton),
+        child: Text(posActionButton,style:TextStyle(
+          color: Color.fromARGB(255, 40, 205, 196),
+        ),),
         onPressed: (){
           hideDialog(context);
           if(posAction!=null){
@@ -64,7 +56,9 @@ class MyDialogUtils{
     showDialog(context: context, builder: (BuildContext){
       barrierDismissible: true;
       return AlertDialog(
-        content: Text(Message),
+        content: Text(Message,style: TextStyle(
+          color: Colors.black,
+        ),),
         actions: actions,
       );
     });

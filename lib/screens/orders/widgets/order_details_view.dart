@@ -9,6 +9,7 @@ class OrderDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      //color: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -29,12 +30,7 @@ class OrderDetailsView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(order.serviceName,style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color.fromARGB(255, 84, 84, 84),
-                    //color: Colors.black54
-                  ),),
+                  Text(order.serviceName,style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 10,),
                   Text(
                     "By ${order.workerName}",style: TextStyle(
@@ -86,7 +82,7 @@ class OrderDetailsView extends StatelessWidget {
                     children:  [
                       Icon(Icons.location_on_outlined,size: 15,color: Color.fromARGB(
                           255, 84, 84, 84),),
-                      Text("${order.location.substring(0,40)}...",style: TextStyle(
+                      Text("${order.location.substring(0,20)}...",style: TextStyle(
                         
                         color:Color.fromARGB(
                             255, 126, 127, 131),

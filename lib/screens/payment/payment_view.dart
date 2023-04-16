@@ -24,6 +24,7 @@ class PaymentView extends StatefulWidget {
 
 class _PaymentViewState extends BaseView<PaymentViewModel, PaymentView>
     implements PaymentConnector {
+  var order;
   MyUser? user;
 
   //ServiceWidget service = ServiceWidget(title: "Deep cleaning service", imagePath: "gs://homear-intern.appspot.com/app_images/Group 34983.png");
@@ -37,22 +38,19 @@ class _PaymentViewState extends BaseView<PaymentViewModel, PaymentView>
 
   @override
   Widget build(BuildContext context) {
-    var order = ModalRoute.of(context)!.settings.arguments as OrderModel;
+    order = ModalRoute.of(context)!.settings.arguments as OrderModel;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           "Payment",
-          style: TextStyle(
-            color: Color.fromARGB(255, 84, 84, 84),
-          ),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,
               color: Color.fromARGB(255, 84, 84, 84)),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
       ),
@@ -325,6 +323,6 @@ class _PaymentViewState extends BaseView<PaymentViewModel, PaymentView>
 
   @override
   goToHome() {
-    Navigator.pushNamed(context, MapScreen.routeName);
+    Navigator.pushNamed(context, MapScreen.routeName, arguments: order);
   }
 }
