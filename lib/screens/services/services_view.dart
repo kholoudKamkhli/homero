@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:homero/screens/home_tab_screen/widgets/sub_service_widget.dart';
 import 'package:homero/screens/services/service_tab_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../database/service_database.dart';
+import '../../controllers/database/service_database.dart';
 import '../../models/service_model.dart';
 import '../home_screen/home_screen_view.dart';
+import '../shared/widgets/sub_service_widget.dart';
 
 class ServicesView extends StatefulWidget {
   static const String routeName = "ServicesView";
@@ -28,20 +28,15 @@ class _ServicesViewState extends State<ServicesView> {
   initServices() async {
     services = await ServiceDatabase.getMainServices();
 
-    Future.delayed(Duration(seconds: 40));
+    Future.delayed(const Duration(seconds: 40));
     subServices = await ServiceDatabase.getServiceSubServices(
         services[selectedIndex].id ?? "");
-    print(services);
-    setState(() {
-      print("here inside init state id is ${services[selectedIndex].id}");
-    });
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    //String? serviceId = ModalRoute.of(context)?.settings.arguments as String?;
-    //print("here is service ID $serviceId");
     initServices();
   }
 
@@ -103,10 +98,10 @@ class _ServicesViewState extends State<ServicesView> {
           ),
           //ServiceTabsWidget(),
           searchService != null
-              ? SizedBox(
+              ? const SizedBox(
                   height: 0,
                 )
-              : SizedBox(
+              : const SizedBox(
                   height: 10,
                 ),
           searchService != null
@@ -140,8 +135,8 @@ class _ServicesViewState extends State<ServicesView> {
 
           searchService != null
               ? Expanded(
-                  child: searchServices.length == 0
-                      ? Center(
+                  child: searchServices.isEmpty
+                      ? const Center(
                           child: Text("No matched results"),
                         )
                       : GridView.builder(
@@ -151,13 +146,13 @@ class _ServicesViewState extends State<ServicesView> {
                           },
                           itemCount: searchServices.length,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4),
                         ),
                 )
               : Expanded(
-                  child: subServices.length == 0
-                      ? Center(
+                  child: subServices.isEmpty
+                      ? const Center(
                           child: CircularProgressIndicator(),
                         )
                       : GridView.builder(
@@ -167,7 +162,7 @@ class _ServicesViewState extends State<ServicesView> {
                           },
                           itemCount: subServices.length,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 4),
                         ),
                 )

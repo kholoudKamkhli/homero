@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:homero/controllers/user_location_controller.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homero/models/user_model.dart';
-import 'package:homero/shared/dialog_utils.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import '../../database/user_database.dart';
+import 'package:homero/screens/profile/profile_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../controllers/database/user_database.dart';
+import '../../controllers/view_models/profile_view_model.dart';
+import '../../controllers/view_models/user_location_controller.dart';
+import '../shared/dialog_utils.dart';
 class EditProfile extends StatefulWidget {
   static const String routeName = "editProfile";
 
@@ -32,18 +33,15 @@ class _EditProfileState extends State<EditProfile> {
   var formKey = GlobalKey<FormState>();
   var color = Colors.transparent;
   var hintColor = Colors.white;
-
-  //var color2 = Colors.transparent;
-  //var hintColor2 = Colors.white;
+  ProfileViewModel viewModel = ProfileViewModel();
   bool enabled = true;
+  bool isClicked = false;
 
   Future<void> initUser() async {
-    print(FirebaseAuth.instance.currentUser!.uid);
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
-    if(user!.imageUrl==""){
-      image = AssetImage("assets/images/img_10.png");
-    }
-    else{
+    if (user!.imageUrl == "") {
+      image = const AssetImage("assets/images/img_10.png");
+    } else {
       image = NetworkImage(user!.imageUrl);
     }
     setState(() {});
@@ -51,34 +49,10 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
-    locationController.requestService();
-    locationController.requestPermession();
     // TODO: implement initState
     super.initState();
     initUser();
     usernameFocus.addListener(() {});
-  }
-
-  final ImagePicker _picker = ImagePicker();
-  XFile? _image;
-
-  Future getImage() async {
-    var image = await _picker.pickImage(source: ImageSource.gallery);
-
-    _image = image;
-    print(_image?.path ?? "null path");
-    if (_image != null) {
-      Reference referenceRoot = FirebaseStorage.instance.ref();
-      Reference referenceImages = referenceRoot.child('images');
-      Reference referenceImageToUpload = referenceImages.child(_image!.path);
-      try {
-        await referenceImageToUpload.putFile(File(_image!.path));
-        String imageUrl = await referenceImageToUpload.getDownloadURL();
-        user!.imageUrl = imageUrl;
-        await UserDatabase.updateImage(user!, imageUrl);
-      } catch (error) {}
-    }
-    setState(() {});
   }
 
   @override
@@ -89,12 +63,15 @@ class _EditProfileState extends State<EditProfile> {
         title: Text(
           AppLocalizations.of(context)!.edit_profile,
           style: Theme.of(context).appBarTheme.titleTextStyle,
-
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              ),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileView(), maintainState: true),
+          ),
         ),
         elevation: 0,
         centerTitle: true,
@@ -111,32 +88,62 @@ class _EditProfileState extends State<EditProfile> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Container(
                       alignment: Alignment.center,
                       child: InkWell(
                         onTap: () {
-                          getImage();
-                        },
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: image,
+                          viewModel.getImage(user!);
+                          isClicked = true;print(isClicked);
+                          setState(() {
 
-                            ),
-                            Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Image.asset(
-                                  "assets/images/img_33.png",
-                                  height: 32,
-                                  width: 32,
-                                )),
-                          ],
+                          });
+                        },
+                        child: BlocProvider<ProfileViewModel>(
+                          create: (_) => viewModel,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              isClicked
+                                  ? BlocBuilder<ProfileViewModel, ProfileState>(
+                                      builder: (context, state) {
+                                      if (state is LoadedState) {
+                                        isClicked = false;
+                                        return CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage:
+                                              NetworkImage(state.image),
+                                        );
+                                      }
+                                      else if(state is ErrorState){
+                                        return CircleAvatar(
+                                          radius: 50,
+                                          child: Center(child: Text(state.errorMessage),),
+                                        );
+                                      }
+                                      else{
+                                        return const CircleAvatar(
+                                          radius: 50,
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    })
+                                  : CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: image,
+                                    ),
+                              Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Image.asset(
+                                    "assets/images/img_33.png",
+                                    height: 32,
+                                    width: 32,
+                                  )),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -145,22 +152,22 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     Container(
                       alignment: Alignment.center,
-                      child:  Text(
+                      child: Text(
                         AppLocalizations.of(context)!.click_to_edit,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Color.fromARGB(255, 126, 127, 131),
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
                       height: 44,
                       child: TextFormField(
-                        onTap: (){},
+                        onTap: () {},
                         onEditingComplete: () {
                           if (usernameCont.text != null &&
                               usernameCont.text != "") {
@@ -168,10 +175,6 @@ class _EditProfileState extends State<EditProfile> {
                             UserDatabase.editUser(user!);
                           }
                         },
-                        // onSaved: (value){
-                        //   print(value);
-                        //
-                        // },
                         controller: usernameCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -182,19 +185,18 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         focusNode: usernameFocus,
                         decoration: InputDecoration(
-                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                          suffixIcon: Icon(
+                          suffixIcon: const Icon(
                             Icons.person_outline_outlined,
                             size: 15,
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
                           hintText: user!.username,
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
-                         // hint: user!.username,
+                          // hint: user!.username,
                           labelStyle: TextStyle(
                               color: usernameFocus.hasFocus
                                   ? Colors.tealAccent
@@ -213,12 +215,13 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.tealAccent),
+                            borderSide:
+                                const BorderSide(color: Colors.tealAccent),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
@@ -243,15 +246,14 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         focusNode: mailFocus,
                         decoration: InputDecoration(
-                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                          suffixIcon: Icon(
+                          suffixIcon: const Icon(
                             Icons.email_outlined,
                             size: 15,
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
                           hintText: user!.email,
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
@@ -274,12 +276,13 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.tealAccent),
+                            borderSide:
+                                const BorderSide(color: Colors.tealAccent),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
@@ -302,15 +305,14 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         focusNode: phoneFocus,
                         decoration: InputDecoration(
-                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                          suffixIcon: Icon(
+                          suffixIcon: const Icon(
                             Icons.phone_outlined,
                             size: 15,
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
                           hintText: user!.phoneNum ?? "Phone Number",
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 12,
                           ),
@@ -333,55 +335,60 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.tealAccent),
+                            borderSide:
+                                const BorderSide(color: Colors.tealAccent),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
-                    
                     InkWell(
-                      onTap: ()async{
-                          try{
-                            await FirebaseAuth.instance
-                                .sendPasswordResetEmail(email: user!.email);
-                            MyDialogUtils.showAnotherMessage(context, "Activation message has been sent to your mail", "Ok");
-                          }
-                          catch(e){
-
-                          }
-
+                      onTap: () async {
+                        try {
+                          await FirebaseAuth.instance
+                              .sendPasswordResetEmail(email: user!.email);
+                          MyDialogUtils.showAnotherMessage(
+                              context,
+                              "Activation message has been sent to your mail",
+                              "Ok");
+                        } catch (e) {}
                       },
                       child: Container(
                         alignment: Alignment.center,
                         height: 44,
-                          width: 344,
+                        width: 344,
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
                         child: Row(
-                          children: [
+                          children: const [
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0,bottom: 8),
-                              child: Text("..........",style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                              ),),
+                              padding: EdgeInsets.only(left: 8.0, bottom: 8),
+                              child: Text(
+                                "..........",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                             ),
                             Spacer(),
                             Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Icon(Icons.lock_outline,color: Colors.grey,size:15 ,),
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.grey,
+                                size: 15,
+                              ),
                             )
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     SizedBox(
@@ -394,7 +401,6 @@ class _EditProfileState extends State<EditProfile> {
                             UserDatabase.editUser(user!);
                           }
                         },
-
                         controller: locationCont,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -405,15 +411,14 @@ class _EditProfileState extends State<EditProfile> {
                         },
                         focusNode: locationFocus,
                         decoration: InputDecoration(
-                          //suffixIcon: ImageIcon(AssetImage("assets/images/img_34.png"),color: Colors.grey,size: 9,),
-                          suffixIcon: Icon(
+                          suffixIcon: const Icon(
                             Icons.location_on_outlined,
                             size: 15,
                             color: Colors.grey,
                           ),
                           focusColor: Colors.transparent,
-                          hintText: user!.address??"location",
-                          hintStyle: TextStyle(
+                          hintText: user!.address ?? "location",
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
@@ -436,27 +441,16 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.tealAccent),
+                            borderSide:
+                                const BorderSide(color: Colors.tealAccent),
                           ),
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
             ),
     );
   }
-  // Future<Address?> getUserLocation()async{
-  //   bool isServiceEnabled =await locationController.requestService();
-  //   bool isPermessionGranted = await locationController.requestPermession();
-  //   if(isServiceEnabled&&isPermessionGranted){
-  //     var locationData = await locationController.getLocation();
-  //     final coordinates = new Coordinates(locationData?.latitude, locationData?.longitude);
-  //     var address = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-  //     var first = address.first;
-  //     return first;
-  //   }
-  // }
 }

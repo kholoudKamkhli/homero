@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:homero/database/service_database.dart';
 import 'package:homero/models/service_model.dart';
 
+import '../../controllers/database/service_database.dart';
 import '../home_screen/home_screen_view.dart';
-import '../home_tab_screen/widgets/sub_service_widget.dart';
+import '../shared/widgets/sub_service_widget.dart';
 
 class SelectedServiceView extends StatelessWidget {
   static const String routeName = "selectedServiceView";

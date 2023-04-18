@@ -5,11 +5,9 @@ import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/profile/profile_view.dart';
 import 'package:homero/screens/services/services_view.dart';
 import 'package:homero/screens/settings/settings_view.dart';
-
-import '../../database/user_database.dart';
+import '../../controllers/database/user_database.dart';
 import '../home_tab_screen/home_tab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 class HomeScreenView extends StatefulWidget {
   static const String routeName = "homeScreen";
 
@@ -25,7 +23,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   initUser() async {
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
     if(user!.imageUrl==""){
-      image = AssetImage("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg");
+      image = const AssetImage("assets/images/depositphotos_134255710-stock-illustration-avatar-vector-male-profile-gray.jpg");
     }
     else{
       image = NetworkImage(user!.imageUrl);
@@ -43,7 +41,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
   @override
   Widget build(BuildContext context) {
     return user == null
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : Scaffold(
@@ -71,7 +69,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                           radius: 50,
                           backgroundImage: image,
                         ),
-                        color: Color.fromARGB(255, 52, 205, 196),
+                        color: const Color.fromARGB(255, 52, 205, 196),
                         onPressed: () {
                           Navigator.pushNamed(context, ProfileView.routeName);
                         },
@@ -93,27 +91,23 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                 items:  [
                   BottomNavigationBarItem(
                     backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-                    icon: ImageIcon(AssetImage("assets/images/img_13.png")),
+                    icon: const ImageIcon(AssetImage("assets/images/img_13.png")),
                     label: AppLocalizations.of(context)!.profile,
                   ),
                   BottomNavigationBarItem(
-                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
-                    icon: ImageIcon(AssetImage("assets/images/img_14.png")),
+                    icon: const ImageIcon(AssetImage("assets/images/img_14.png")),
                     label: AppLocalizations.of(context)!.orders,
                   ),
                   BottomNavigationBarItem(
-                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
-                    icon: Icon(Icons.home),
+                    icon: const Icon(Icons.home),
                     label: AppLocalizations.of(context)!.home,
                   ),
                   BottomNavigationBarItem(
-                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
-                    icon: ImageIcon(AssetImage("assets/images/img_15.png")),
+                    icon: const ImageIcon(AssetImage("assets/images/img_15.png")),
                     label: AppLocalizations.of(context)!.services,
                   ),
                   BottomNavigationBarItem(
-                    //backgroundColor: Color.fromARGB(255, 217, 217, 217),
-                    icon: ImageIcon(AssetImage("assets/images/img_16.png")),
+                    icon: const ImageIcon(AssetImage("assets/images/img_16.png")),
                     label: AppLocalizations.of(context)!.settings,
                   ),
                 ]),

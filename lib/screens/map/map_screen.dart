@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:homero/database/order_database.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
-import 'package:homero/shared/dialog_utils.dart';
-import 'package:intl/intl.dart';
 import "package:latlong2/latlong.dart" as latLng;
-
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_geocoder/model.dart';
+
+import '../../controllers/database/order_database.dart';
+import '../shared/dialog_utils.dart';
 
 
 
@@ -34,7 +33,7 @@ class _MapScreenState extends State<MapScreen> {
             height: MediaQuery.of(context).size.height*0.8,
             child: GoogleMap(
               initialCameraPosition:
-                  CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 14),
+                  const CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 14),
               markers: {
                 if (pickUpPoint != null) pickUpPoint!,
               },
@@ -48,24 +47,20 @@ class _MapScreenState extends State<MapScreen> {
                 .of(context)
                 .size
                 .width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromARGB(24, 255, 255, 255),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("choose pich up point then click on continue",style: TextStyle(
-                  color: Colors.black54,
-                  fontSize:12 ,
-                  fontWeight: FontWeight.w500,
-                ),),
-                SizedBox(height: 10,),
+                 Text("choose pick up point then click on continue",style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 10,),
                 InkWell(
                   onTap: ()async{
                     if(pickUpPoint!=null){
                       var pos=pickUpPoint!.position;
                       final coordinates =
-                      new Coordinates(pos.latitude,pos.longitude);
+                       Coordinates(pos.latitude,pos.longitude);
                       var address =
                           await Geocoder.local.findAddressesFromCoordinates(coordinates);
                       first = address.first;
@@ -86,9 +81,9 @@ class _MapScreenState extends State<MapScreen> {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: Color.fromARGB(255, 52, 205, 196),
+                      color: const Color.fromARGB(255, 52, 205, 196),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Continue",
                       style: TextStyle(
                         color: Colors.white,
@@ -113,21 +108,19 @@ class _MapScreenState extends State<MapScreen> {
         onDragEnd: (LatLng newPos) async {
           latLang = newPos;
           final coordinates =
-          new Coordinates(latLang.latitude,latLang.longitude);
+           Coordinates(latLang.latitude,latLang.longitude);
           var address =
               await Geocoder.local.findAddressesFromCoordinates(coordinates);
            first = address.first;
-           print(first?.addressLine?.toString());
 
         },
-        markerId: MarkerId("pick up point"),
-        infoWindow: InfoWindow(title: "Pick Up Point"),
+        markerId: const MarkerId("pick up point"),
+        infoWindow: const InfoWindow(title: "Pick Up Point"),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
         position: pos,
       );
     }
     setState(() {
-
     });
   }
 }

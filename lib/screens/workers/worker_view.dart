@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homero/models/service_model.dart';
 import 'package:homero/models/worker_model.dart';
 import 'package:homero/screens/workers/worker_widget.dart';
-import 'package:homero/view_models/workers_view_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../../database/worker_database.dart';
+import '../../controllers/database/worker_database.dart';
+import '../../controllers/view_models/workers_view_model.dart';
 import '../service_details/service_details_view.dart';
 
 int numOfChoosenWorkers = 0;
@@ -96,6 +96,7 @@ class _WorkerViewState extends State<WorkerView> {
                   child: Text(state.errorMessage),
                 );
               } else if(state is LoadedState){
+                 workers = state.workers;
                 return Expanded(
                   child: ListView.builder(
                     itemBuilder: (_, index) {

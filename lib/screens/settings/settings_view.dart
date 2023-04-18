@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:homero/controllers/auth_controllers/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../controllers/view_models/settings/settings_provider.dart';
 import '../home_screen/home_screen_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SettingsView extends StatefulWidget {
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
-
 class _SettingsViewState extends State<SettingsView> {
   var isSwitched = true;
   var isSwitched2 = false;
@@ -18,9 +16,7 @@ class _SettingsViewState extends State<SettingsView> {
   initPref()async{
     prefs = await SharedPreferences.getInstance();
     setState(() {
-
     });
-
   }
   @override
   void initState() {
@@ -34,7 +30,7 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     var settingsProvider = Provider.of<SettingsProvider>(context);
 
-    return prefs==null?Center(child: CircularProgressIndicator(),):Scaffold(
+    return prefs==null?const Center(child: CircularProgressIndicator(),):Scaffold(
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.settings,
@@ -54,33 +50,33 @@ class _SettingsViewState extends State<SettingsView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Text(
                   AppLocalizations.of(context)!.theme,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color.fromARGB(255, 84, 84, 84),
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
                   children: [
                     Image.asset(
                       "assets/images/img_37.png",
-                      color: isSwitched
-                          ? Color.fromARGB(255, 52, 205, 196)
-                          : Color.fromARGB(255, 84, 84, 84),
+                      color: prefs!.getBool("isSwitched")!
+                          ? const Color.fromARGB(255, 52, 205, 196)
+                          : const Color.fromARGB(255, 84, 84, 84),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
@@ -98,6 +94,8 @@ class _SettingsViewState extends State<SettingsView> {
                             isSwitched2 = false;
                             isSwitched = true;
                             settingsProvider.changeTheme(ThemeMode.light);
+                            prefs!.setBool("isSwitched2", false);
+                            prefs!.setBool("isSwitched",true);
                           });
                           print('Switch Button is ON');
                         } else {
@@ -105,31 +103,32 @@ class _SettingsViewState extends State<SettingsView> {
                             isSwitched2 = true;
                             isSwitched = false;
                             settingsProvider.changeTheme(ThemeMode.dark);
+                            prefs!.setBool("isSwitched2", true);
+                            prefs!.setBool("isSwitched",false);
 
                           });
-                          print('Switch Button is OFF');
                         }
                       },
-                      value: isSwitched,
+                      value: prefs!.getBool("isSwitched")??isSwitched,
                       activeColor: Colors.white,
-                      activeTrackColor: Color.fromARGB(255, 52, 205, 196),
+                      activeTrackColor: const Color.fromARGB(255, 52, 205, 196),
                       inactiveThumbColor: Colors.white,
                       inactiveTrackColor: Colors.black12,
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
                   children: [
                     Image.asset(
                       "assets/images/img_37.png",
-                      color: isSwitched2
-                          ? Color.fromARGB(255, 52, 205, 196)
-                          : Color.fromARGB(255, 84, 84, 84),
+                      color: prefs!.getBool("isSwitched2")!
+                          ? const Color.fromARGB(255, 52, 205, 196)
+                          : const Color.fromARGB(255, 84, 84, 84),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Text(
@@ -146,6 +145,8 @@ class _SettingsViewState extends State<SettingsView> {
                             isSwitched = false;
                             isSwitched2 = true;
                             settingsProvider.changeTheme(ThemeMode.dark);
+                            prefs!.setBool("isSwitched2", true);
+                            prefs!.setBool("isSwitched",false);
 
                           });
                           print('Switch Button is ON');
@@ -154,20 +155,21 @@ class _SettingsViewState extends State<SettingsView> {
                             isSwitched = true;
                             isSwitched2 = false;
                             settingsProvider.changeTheme(ThemeMode.light);
+                            prefs!.setBool("isSwitched2", false);
+                            prefs!.setBool("isSwitched",true);
 
                           });
-                          print('Switch Button is OFF');
                         }
                       },
-                      value: isSwitched2,
+                      value: prefs!.getBool("isSwitched2")??isSwitched2,
                       activeColor: Colors.white,
-                      activeTrackColor: Color.fromARGB(255, 52, 205, 196),
+                      activeTrackColor: const Color.fromARGB(255, 52, 205, 196),
                       inactiveThumbColor: Colors.white,
                       inactiveTrackColor: Colors.black12,
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
               ],
@@ -175,19 +177,19 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           Container(
             height: 1,
-            margin: EdgeInsets.symmetric(horizontal: 40),
-            decoration: BoxDecoration(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 126, 127, 131),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Text(
               AppLocalizations.of(context)!.language,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color.fromARGB(255, 84, 84, 84),
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -196,11 +198,11 @@ class _SettingsViewState extends State<SettingsView> {
           ),
           Theme(
             data: ThemeData(
-              toggleableActiveColor: Color.fromARGB(255, 52, 205, 196),
+              toggleableActiveColor: const Color.fromARGB(255, 52, 205, 196),
             ),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 InkWell(
@@ -230,7 +232,6 @@ class _SettingsViewState extends State<SettingsView> {
                 InkWell(
                   onTap: (){
                     settingsProvider.changeLocale("ar");
-                    print(settingsProvider.isArabic());
                   },
                   child: RadioListTile(
                     title: Text(AppLocalizations.of(context)!.arabic,style: Theme.of(context).textTheme.bodyLarge,
@@ -243,8 +244,6 @@ class _SettingsViewState extends State<SettingsView> {
                           _selectedValue = value;
                           prefs!.setInt("_selectedValue", value);
                           settingsProvider.changeLocale("ar");
-                          print(settingsProvider.isArabic());
-                          print(AppLocalizations.of(context)!.settings);
                         }
                         ;
                       });
@@ -259,49 +258,48 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  void toggleSwitch(bool value) {
-    if (isSwitched == false) {
-      setState(() {
-        isSwitched2 = false;
-        isSwitched = true;
-      });
-      print('Switch Button is ON');
-    } else {
-      setState(() {
-        isSwitched2 = true;
-        isSwitched = false;
-      });
-      print('Switch Button is OFF');
-    }
-  }
+  // void toggleSwitch(bool value) {
+  //   if (isSwitched == false) {
+  //     setState(() {
+  //       isSwitched2 = false;
+  //       isSwitched = true;
+  //     });
+  //     print('Switch Button is ON');
+  //   } else {
+  //     setState(() {
+  //       isSwitched2 = true;
+  //       isSwitched = false;
+  //     });
+  //     print('Switch Button is OFF');
+  //   }
+  // }
 
-  void toggleSwitch2(bool value) {
-    if (isSwitched2 == false) {
-      setState(() {
-        isSwitched = false;
-        isSwitched2 = true;
-      });
-      print('Switch Button is ON');
-    } else {
-      setState(() {
-        isSwitched = true;
-        isSwitched2 = false;
-      });
-      print('Switch Button is OFF');
-    }
-  }
+  // void toggleSwitch2(bool value) {
+  //   if (isSwitched2 == false) {
+  //     setState(() {
+  //       isSwitched = false;
+  //       isSwitched2 = true;
+  //     });
+  //     print('Switch Button is ON');
+  //   } else {
+  //     setState(() {
+  //       isSwitched = true;
+  //       isSwitched2 = false;
+  //     });
+  //     print('Switch Button is OFF');
+  //   }
+  // }
 
-  void _handleRadioValueChange(int? value)async {
-    setState(() {
-
-      if (value != null) {
-        _selectedValue = value;
-        prefs!.setInt("_selectedValue", value);
-      }
-      else{
-        _selectedValue = 1;
-      }
-      ;
-    });
-  }
+  // void _handleRadioValueChange(int? value)async {
+  //   setState(() {
+  //     if (value != null) {
+  //       _selectedValue = value;
+  //       prefs!.setInt("_selectedValue", value);
+  //     }
+  //     else{
+  //       _selectedValue = 1;
+  //     }
+  //     ;
+  //   });
+  // }
 }

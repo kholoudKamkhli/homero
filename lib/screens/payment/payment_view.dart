@@ -1,16 +1,13 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homero/controllers/payment/payment_connector.dart';
-import 'package:homero/controllers/payment/payment_view_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/models/user_model.dart';
 import 'package:homero/screens/map/map_screen.dart';
 import 'package:intl/intl.dart';
 
-import '../../controllers/base_classes/base.dart';
-import '../../database/user_database.dart';
-
+import '../../controllers/database/user_database.dart';
+import '../../controllers/view_models/pay_view_model.dart';
 class PaymentView extends StatefulWidget {
   static const String routeName = "payment";
 
@@ -18,307 +15,309 @@ class PaymentView extends StatefulWidget {
   State<PaymentView> createState() => _PaymentViewState();
 }
 
-class _PaymentViewState extends BaseView<PaymentViewModel, PaymentView>
-    implements PaymentConnector {
+class _PaymentViewState extends State<PaymentView>
+     {
   var order;
   MyUser? user;
-
-  //ServiceWidget service = ServiceWidget(title: "Deep cleaning service", imagePath: "gs://homear-intern.appspot.com/app_images/Group 34983.png");
+  PayViewModel payViewModel = PayViewModel();
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initUser();
-    viewModel = initViewModel();
-    viewModel.connector = this;
   }
 
   @override
   Widget build(BuildContext context) {
     order = ModalRoute.of(context)!.settings.arguments as OrderModel;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title:  Text(
-          "Payment",
-          style: Theme.of(context).appBarTheme.titleTextStyle,
+    return BlocProvider<PayViewModel>(
+      create: (_)=>payViewModel,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title:  Text(
+            "Payment",
+            style: Theme.of(context).appBarTheme.titleTextStyle,
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back,
+                ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          elevation: 0,
+          centerTitle: true,
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Color.fromARGB(255, 84, 84, 84)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: user == null
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Services",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 126, 127, 131),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+        body: user == null
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : BlocConsumer<PayViewModel,PaymentState>(builder: (context,state){
+              if(state is ErrorPayment){
+                return Center(child: Text(state.errorMessage),);
+              }
+              else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    order.serviceName,
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 126, 127, 131),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Text(
-                    order.location,
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 126, 127, 131),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Text(
-                    "${DateFormat.yMMMEd().format(order.date)}",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 126, 127, 131),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Text(
-                    "${order.numOfRoom} Rooms",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 126, 127, 131),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: order.isScheduled
-                      ? Text(
-                          "1 service-${order.scheduling}",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        )
-                      : Text(
-                          "1 service-non scheduled",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Container(
-                    height: 1,
-                    width: 318,
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 217, 217, 217)),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Amount",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 126, 127, 131),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "1 Service",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Payment",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 126, 127, 131),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "${order.cost} LE",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Container(
-                    height: 1,
-                    width: 318,
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 217, 217, 217)),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Total Payment",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 126, 127, 131),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "${order.cost} LE",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  alignment: Alignment.center,
-                  height: 127,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 84, 84, 84),
-                  ),
-                  child: InkWell(
-                    // onTap: () {
-                    //   buttonClicked = !buttonClicked;
-                    //   setState(() {});
-                    // },
-                    onTap: () async {
-                      await viewModel.makePayment(order.cost.toString(), order);
-                      //Navigator.pushNamed(context, HomeScreenView.routeName);
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: 58,
+                    Container(
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Color.fromARGB(255, 52, 205, 196),
-                      ),
-                      child: Text(
-                        "Confirm",
+                      child: const Text(
+                        "Services",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        order.serviceName,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Text(
+                        order.location,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Text(
+                        "${DateFormat.yMMMEd().format(order.date)}",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Text(
+                        "${order.numOfRoom} Rooms",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: order.isScheduled
+                          ? Text(
+                        "1 service-${order.scheduling}",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      )
+                          : const Text(
+                        "1 service-non scheduled",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 126, 127, 131),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Container(
+                        height: 1,
+                        width: 318,
+                        decoration: const BoxDecoration(
+                            color: Color.fromARGB(255, 217, 217, 217)),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Amount",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 126, 127, 131),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const Spacer(),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 30),
+                            child: Text(
+                              "1 Service",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 126, 127, 131),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 3,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Payment",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 126, 127, 131),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(
+                              "${order.cost} LE",
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 126, 127, 131),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Container(
+                        height: 1,
+                        width: 318,
+                        decoration: const BoxDecoration(
+                            color: Color.fromARGB(255, 217, 217, 217)),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 30.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Total Payment",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 126, 127, 131),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(
+                              "${order.cost} LE",
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 126, 127, 131),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    BlocProvider<PayViewModel>(
+                      create: (_)=>payViewModel,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 127,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                          color: Color.fromARGB(255, 84, 84, 84),
+                        ),
+                        child: InkWell(
+
+                          onTap: () async {
+                            await payViewModel.makePayment(order.cost.toString(), order);
+
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 58,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: const Color.fromARGB(255, 52, 205, 196),
+                            ),
+                            child: const Text(
+                              "Confirm",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+        }, listener: (context,state){
+              if(state is DonePayment){
+                Navigator.pushNamed(context, MapScreen.routeName, arguments: order);
+              }
+        })
+
+      ),
     );
   }
-
   Future<void> initUser() async {
-    print(FirebaseAuth.instance.currentUser!.uid);
     user = await UserDatabase.getUser(FirebaseAuth.instance.currentUser!.uid);
     setState(() {});
   }
 
-  @override
-  PaymentViewModel initViewModel() {
-    return PaymentViewModel();
-  }
-
-  @override
-  goToHome() {
-    Navigator.pushNamed(context, MapScreen.routeName, arguments: order);
-  }
 }

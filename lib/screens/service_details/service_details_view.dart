@@ -8,7 +8,8 @@ import 'package:homero/screens/payment/payment_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-import '../../controllers/user_location_controller.dart';
+import '../../controllers/view_models/user_location_controller.dart';
+
 
 class ServiceDetailsView extends StatefulWidget {
   static const String routeName = "serviceDetails";
@@ -70,7 +71,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
         child: Column(
           children: [
             Expanded(child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,20 +79,18 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                   Container(
                     alignment: Alignment.centerLeft,
                     width: 327,
-                    height: 70,
+                    height: 60,
                     margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                       color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.black45)),
                     child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
                         const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 8),
+                          padding: EdgeInsets.only(
+                              left: 8,right:8,top: 7),
                           child: Text(
                             "Full name",
                             style: TextStyle(
@@ -125,24 +124,25 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    padding: EdgeInsets.only(bottom: 8, right: 5,top: 12),
+                    padding: const EdgeInsets.only(bottom: 8, right: 5,top: 12),
                     alignment: Alignment.bottomCenter,
-                    margin: EdgeInsets.symmetric(horizontal: 50, vertical: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: 50, vertical: 8),
                     width: 327,
-                    height: 70,
+                    height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color.fromARGB(255, 126, 127,
+                      border: Border.all(color: const Color.fromARGB(255, 126, 127,
                           131)),
                       color: Colors.white
                     ),
                     child: Container(
-                      margin: EdgeInsets.only(top: 12),
+                      //margin: const EdgeInsets.only(top: 12),
                       child: IntlPhoneField(
+
                         controller: numCont,
                         validator: (value) {
                           if (value == null) {
@@ -151,7 +151,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                             return null;
                           }
                         },
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
+                          counterText: "",
+                          //helperText: "",
                           helperStyle: TextStyle(
                             color: Colors.grey
                           ),
@@ -161,19 +163,20 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                           hintText: 'Phone Number',
                           border: InputBorder.none,
                         ),
-                        initialCountryCode: 'IN',
+                        initialCountryCode: 'EG',
                         onChanged: (phone) {
                           completeNum = phone.completeNumber;
                         },
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50),
-                    child: Text(
+
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
+                    child: const Text(
                       "Enter location",
                       style: TextStyle(
                         fontWeight: FontWeight.w300,
@@ -182,19 +185,24 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color.fromARGB(255, 126, 127,
+                            131)),
+                        color: Colors.white
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     child: SizedBox(
-                      height: 70,
+                      height: 60,
                       child: TextFormField(
                         onEditingComplete: () {
                           if (locationCont.text != null &&
                               locationCont.text != "") {
-                            // user!.address = locationCont.text;
-                            // UserDatabase.editUser(user!);
+
                           }
                         },
 
@@ -207,9 +215,8 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                             return null;
                           }
                         },
-                        //focusNode: locationFocus,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.location_on_outlined,
                             size: 15,
                             color: Colors.grey,
@@ -220,7 +227,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                               locationCont.text =
                                   first?.addressLine?.toString() ?? "";
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.gps_fixed,
                               color: Colors.grey,
                               size: 14,
@@ -228,7 +235,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                           ),
                           focusColor: Colors.transparent,
                           hintText: "location",
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 18,
                           ),
@@ -236,7 +243,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                           enabled: true,
                           fillColor: Colors.white,
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -247,13 +254,13 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50),
-                    child: Text(
-                      "Enter Date And Time",
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
+                    child: const Text(
+                      "Enter Date",
                       style: TextStyle(
                         fontWeight: FontWeight.w300,
                         fontSize: 14,
@@ -261,56 +268,100 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //       border: Border.all(color: const Color.fromARGB(255, 126, 127,
+                  //           131)),
+                  //       color: Colors.white
+                  //   ),
+                  //   margin: const EdgeInsets.symmetric(horizontal: 50),
+                  //   child: SizedBox(
+                  //     height: 70,
+                  //     child: TextFormField(
+                  //       controller: dateCont,
+                  //       validator: (value) {
+                  //         if (value == null || value.isEmpty) {
+                  //           return "Please enter valid location";
+                  //         } else {
+                  //           return null;
+                  //         }
+                  //       },
+                  //       //focusNode: locationFocus,
+                  //       decoration: InputDecoration(
+                  //         prefixIcon: IconButton(
+                  //           onPressed: () {
+                  //             showTaskDatePicker();
+                  //           },
+                  //           icon: const Icon(
+                  //             Icons.date_range,
+                  //             color: Colors.grey,
+                  //             size: 14,
+                  //           ),
+                  //         ),
+                  //         focusColor: Colors.transparent,
+                  //         hintText: "Date",
+                  //         hintStyle: const TextStyle(
+                  //           color: Colors.grey,
+                  //           fontSize: 18,
+                  //         ),
+                  //         filled: true,
+                  //         enabled: true,
+                  //         fillColor: Colors.white,
+                  //         enabledBorder: OutlineInputBorder(
+                  //           borderSide: const BorderSide(color: Colors.white),
+                  //           borderRadius: BorderRadius.circular(10),
+                  //         ),
+                  //         focusedBorder: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //           borderSide: BorderSide.none,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50),
-                    child: SizedBox(
-                      height: 70,
-                      child: TextFormField(
-                        controller: dateCont,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter valid location";
-                          } else {
-                            return null;
-                          }
-                        },
-                        //focusNode: locationFocus,
-                        decoration: InputDecoration(
-                          prefixIcon: IconButton(
-                            onPressed: () {
-                              showTaskDatePicker();
-                            },
-                            icon: Icon(
-                              Icons.date_range,
-                              color: Colors.grey,
-                              size: 14,
-                            ),
-                          ),
-                          focusColor: Colors.transparent,
-                          hintText: "Date",
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 18,
-                          ),
-                          filled: true,
-                          enabled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 126, 127, 131),
+                      ),
+                      color: Colors.white,
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
+                    child: GestureDetector(
+                      onTap: () {
+                        showTaskDatePicker();
+                      },
+                      child: SizedBox(
+                        height: 60,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DateFormat.yMMMEd().format(selectedDate),
+                                style:const  TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.date_range,
+                                color: Colors.grey,
+                                size: 14,
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Row(
@@ -318,8 +369,8 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 50),
-                            child: Text(
+                            margin: const EdgeInsets.symmetric(horizontal: 50),
+                            child: const Text(
                               "Area",
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
@@ -328,17 +379,17 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            margin: EdgeInsets.only(left: 50),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            margin: const EdgeInsets.only(left: 50),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
                             child: DropdownButton(
-                                underline: SizedBox(),
+                                underline: const SizedBox(),
                                 value: selectedRoomArea,
                                 items: areas
                                     .map((room) =>
@@ -365,8 +416,8 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 50),
-                            child: Text(
+                            margin: const EdgeInsets.symmetric(horizontal: 50),
+                            child: const Text(
                               "Rooms",
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
@@ -375,17 +426,17 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            margin: EdgeInsets.symmetric(horizontal: 50),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            margin: const EdgeInsets.symmetric(horizontal: 50),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
                             child: DropdownButton(
-                                underline: SizedBox(),
+                                underline: const SizedBox(),
                                 value: selectedRoom,
                                 items: rooms
                                     .map((room) =>
@@ -411,23 +462,23 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 50),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     height: 1,
-                    color: Color.fromARGB(255, 217, 217, 217),
+                    color: const Color.fromARGB(255, 217, 217, 217),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
-                    margin: EdgeInsets.only(right: 50),
+                    margin: const EdgeInsets.only(right: 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          margin: EdgeInsets.symmetric(horizontal: 50),
-                          child: Text(
+                          margin: const EdgeInsets.symmetric(horizontal: 50),
+                          child: const Text(
                             "Schedule Service",
                             style: TextStyle(
                               fontWeight: FontWeight.w300,
@@ -439,7 +490,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                         Switch(
                           onChanged: toggleSwitch,
                           value: isSwitched,
-                          activeColor: Color.fromARGB(255, 52, 205, 196),
+                          activeColor: const Color.fromARGB(255, 52, 205, 196),
                           activeTrackColor: Colors.grey,
                           inactiveThumbColor: Colors.grey,
                           inactiveTrackColor: Colors.black12,
@@ -447,17 +498,17 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Container(
                     width: 270,
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    margin: EdgeInsets.symmetric(horizontal: 50),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    margin: const EdgeInsets.symmetric(horizontal: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: isSwitched ? Colors.white : Color.fromARGB(
+                        color: isSwitched ? Colors.white : const Color.fromARGB(
                             255, 234, 234, 234)),
                     child: DropdownButton(
-                        underline: SizedBox(),
+                        underline: const SizedBox(),
                         value: selectedSchedule,
                         items: schedules
                             .map((schedule) =>
@@ -491,7 +542,7 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                   .of(context)
                   .size
                   .width,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 84, 84, 84),
               ),
               child: InkWell(
@@ -531,9 +582,9 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
-                    color: Color.fromARGB(255, 52, 205, 196),
+                    color: const Color.fromARGB(255, 52, 205, 196),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Confirm",
                     style: TextStyle(
                       color: Colors.white,
@@ -573,12 +624,15 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 365)));
+        lastDate: DateTime.now().add(const Duration(days: 365)));
     if (userSelecteDate == null) {
       return;
     } else {
       setState(() {
+        selectedDate = userSelecteDate;
         dateCont.text = DateFormat.yMMMEd().format(selectedDate);
+        print("inside date set state");
+        print(dateCont.text);
       });
     }
   }

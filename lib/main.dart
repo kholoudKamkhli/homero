@@ -14,16 +14,19 @@ import 'package:homero/screens/profile/scheduled_view.dart';
 import 'package:homero/screens/service_details/service_details_view.dart';
 import 'package:homero/screens/services/selected_service_view.dart';
 import 'package:homero/screens/services/services_view.dart';
+import 'package:homero/screens/shared/theme.dart';
 import 'package:homero/screens/sign_in/sign_in_view.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
 import 'package:homero/screens/spalsh_screens/splash_screen1.dart';
 import 'package:homero/screens/workers/worker_view.dart';
-import 'package:homero/shared/theme.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'controllers/auth_controllers/settings/settings_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'controllers/view_models/settings/settings_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,7 +44,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //var settingsProvider= Provider.of<SettingsProvider>(context);
     return Consumer<SettingsProvider>(builder: (context,settingsProvider,child){
       return MaterialApp(
         locale: Locale(settingsProvider.currentLang),
@@ -60,7 +62,6 @@ class MyApp extends StatelessWidget {
           HomeScreenView.routeName: (_) => HomeScreenView(),
           SignInView.routeName: (_) => SignInView(),
           SignUpView.routeName: (_) => SignUpView(),
-          //OTPVerificstion.routeName:(_)=>OTPVerificstion(verificationId: verificationId)
           EditProfile.routeName: (_) => EditProfile(),
           WorkerView.routeName: (_) => WorkerView(),
           PaymentView.routeName: (_) => PaymentView(),
@@ -72,12 +73,9 @@ class MyApp extends StatelessWidget {
           SelectedServiceView.routeName:(_)=>SelectedServiceView(),
           PaymentHistory.routeName:(_)=>PaymentHistory(),
           ProfileView.routeName:(_)=>ProfileView(),
-
         },
-
-        //themeMode: ThemeMode.light,
-        initialRoute: FirebaseAuth.instance.currentUser!=null?HomeScreenView.routeName:SplashScreenOne.routeName,
-        //initialRoute: SignInView.routeName,
+        //initialRoute: FirebaseAuth.instance.currentUser!=null?HomeScreenView.routeName:SplashScreenOne.routeName,
+        initialRoute: SignInView.routeName,
         theme:MyTheme.lightTheme ,
         darkTheme: MyTheme.darkTheme,
         themeMode: settingsProvider.getTheme(),

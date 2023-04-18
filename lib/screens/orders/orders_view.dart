@@ -1,13 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:homero/database/order_database.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/orders/widgets/oder_tab_widget.dart';
 import 'package:homero/screens/orders/widgets/order_details_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../view_models/order_view_model.dart';
+import '../../controllers/view_models/order_view_model.dart';
 import 'widgets/order_widget.dart';
 
 class OrdersView extends StatefulWidget {
@@ -56,49 +54,47 @@ class _OrdersViewState extends State<OrdersView> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Container(
-              child: DefaultTabController(
-                length: ordersType.length,
-                child: Column(
-                  children: [
-                    TabBar(
-                      onTap: (index) async {
-                        selectedIndex = index;
-                        if (index == 0) {
-                          orders = viewModel.initOrders(0);
-                        } else if (index == 1) {
-                          orders =viewModel.initOrders(1);
-                        } else {
-                          orders = viewModel.initOrders(2);
-                        }
-                        setState(() {
-                        });
-                      },
-                      tabs: ordersType
-                          .map((e) => OrderTabWidget(
-                                name: e.name ?? "",
-                                isSelected: selectedIndex == ordersType.indexOf(e)
-                                    ? true
-                                    : false,
-                              ))
-                          .toList(),
-                      isScrollable: true,
-                      indicatorColor: Colors.transparent,
-                    ),
-                  ],
-                ),
+            DefaultTabController(
+              length: ordersType.length,
+              child: Column(
+                children: [
+                  TabBar(
+                    onTap: (index) async {
+                      selectedIndex = index;
+                      if (index == 0) {
+                        orders = viewModel.initOrders(0);
+                      } else if (index == 1) {
+                        orders =viewModel.initOrders(1);
+                      } else {
+                        orders = viewModel.initOrders(2);
+                      }
+                      setState(() {
+                      });
+                    },
+                    tabs: ordersType
+                        .map((e) => OrderTabWidget(
+                              name: e.name ?? "",
+                              isSelected: selectedIndex == ordersType.indexOf(e)
+                                  ? true
+                                  : false,
+                            ))
+                        .toList(),
+                    isScrollable: true,
+                    indicatorColor: Colors.transparent,
+                  ),
+                ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             BlocBuilder<OrderViewModel,OrderState>(
                 builder: (context,state){
                   if(state is LoadingState){
-                    return Center(child: CircularProgressIndicator(),);
+                    return const Center(child: CircularProgressIndicator(),);
                   }
                   else if(state is LoadedState){
                     orders = state.orders;
@@ -115,7 +111,7 @@ class _OrdersViewState extends State<OrdersView> {
                     return Center(child: Text(state.errorMessage),);
                   }
                    else {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                 }
             )

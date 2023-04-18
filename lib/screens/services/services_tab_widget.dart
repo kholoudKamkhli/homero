@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:homero/database/service_database.dart';
-import 'package:homero/screens/home_tab_screen/widgets/sub_service_widget.dart';
 import 'package:homero/screens/services/service_tab_widget.dart';
 
+import '../../controllers/database/service_database.dart';
 import '../../models/service_model.dart';
+import '../shared/widgets/sub_service_widget.dart';
 
 class ServiceTabsWidget extends StatefulWidget {
   @override
