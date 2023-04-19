@@ -93,13 +93,13 @@ class MyTheme {
         fontWeight: FontWeight.w400,
       ),
     ),
-    cardTheme: const CardTheme(color: Color.fromARGB(255, 42, 42, 51)),
+    cardTheme: const CardTheme(color: Color.fromARGB(108, 241, 255, 255)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Color.fromARGB(255, 64, 76, 85),
       showSelectedLabels: true,
       showUnselectedLabels: false,
       selectedIconTheme: IconThemeData(
-        color: Color.fromARGB(255, 40, 205, 196),
+        color: Colors.white,
         size: 30,
       ),
       unselectedIconTheme: IconThemeData(
@@ -107,9 +107,9 @@ class MyTheme {
         size: 24,
       ),
       selectedLabelStyle: TextStyle(
-        color: Color.fromARGB(255, 40, 205, 196),
+        color: Colors.white,
       ),
-      selectedItemColor: Color.fromARGB(255, 40, 205, 196),
+      selectedItemColor: Colors.white,
     ),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homero/models/user_model.dart';
+import 'package:homero/screens/notifications/notification_view.dart';
 import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/profile/profile_view.dart';
 import 'package:homero/screens/services/services_view.dart';
@@ -62,6 +63,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                           color: Theme.of(context).iconTheme.color,
                         ),
                         onPressed: () {
+                          Navigator.pushNamed(context, NotificationView.routeName);
                         },
                       ),
                       IconButton(

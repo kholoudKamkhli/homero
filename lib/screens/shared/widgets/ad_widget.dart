@@ -54,7 +54,10 @@ class AdWidget extends StatelessWidget {
                               onTap: ()async{
                                 SubServiceModel subService = await AdDatabase.getAdSubServices(ad.id);
                                 print(subService.title);
-                                Navigator.pushNamed(context, WorkerView.routeName,arguments: subService);
+                                Navigator.pushNamed(context, WorkerView.routeName,arguments: {
+                                  'subService': subService,
+                                  'package': null,
+                                },);
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 11),

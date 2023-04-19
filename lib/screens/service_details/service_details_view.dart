@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_geocoder/model.dart';
 import 'package:homero/models/order_model.dart';
+import 'package:homero/models/package_model.dart';
 import 'package:homero/models/service_model.dart';
 import 'package:homero/screens/payment/payment_view.dart';
 import 'package:intl/intl.dart';
@@ -47,14 +48,15 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final service = args['service'] as SubServiceModel;
+    final service = args['service'] as SubServiceModel?;
     final workerName = args['workerName'] as String;
+    final package = args["package"] as PackageModel?;
     return Scaffold(
       resizeToAvoidBottomInset: false,
 
       appBar: AppBar(
         title: Text(
-          service.title,
+          service==null?package!.title :service.title,
           style: Theme.of(context).appBarTheme.titleTextStyle,
 
         ),
@@ -271,58 +273,6 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                   const SizedBox(
                     height: 10,
                   ),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       border: Border.all(color: const Color.fromARGB(255, 126, 127,
-                  //           131)),
-                  //       color: Colors.white
-                  //   ),
-                  //   margin: const EdgeInsets.symmetric(horizontal: 50),
-                  //   child: SizedBox(
-                  //     height: 70,
-                  //     child: TextFormField(
-                  //       controller: dateCont,
-                  //       validator: (value) {
-                  //         if (value == null || value.isEmpty) {
-                  //           return "Please enter valid location";
-                  //         } else {
-                  //           return null;
-                  //         }
-                  //       },
-                  //       //focusNode: locationFocus,
-                  //       decoration: InputDecoration(
-                  //         prefixIcon: IconButton(
-                  //           onPressed: () {
-                  //             showTaskDatePicker();
-                  //           },
-                  //           icon: const Icon(
-                  //             Icons.date_range,
-                  //             color: Colors.grey,
-                  //             size: 14,
-                  //           ),
-                  //         ),
-                  //         focusColor: Colors.transparent,
-                  //         hintText: "Date",
-                  //         hintStyle: const TextStyle(
-                  //           color: Colors.grey,
-                  //           fontSize: 18,
-                  //         ),
-                  //         filled: true,
-                  //         enabled: true,
-                  //         fillColor: Colors.white,
-                  //         enabledBorder: OutlineInputBorder(
-                  //           borderSide: const BorderSide(color: Colors.white),
-                  //           borderRadius: BorderRadius.circular(10),
-                  //         ),
-                  //         focusedBorder: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //           borderSide: BorderSide.none,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
@@ -552,13 +502,10 @@ class _ServiceDetailsViewState extends State<ServiceDetailsView> {
                 // },
                 onTap: () async{
                   if (formKey.currentState!.validate()) {
-                    print(workerName);
-                    print(service.cost);
-                    print(service.id);
                     OrderModel order = OrderModel(
-                      cost: service.cost,
+                      cost: service==null?package!.cost:service.cost,
                       uId: FirebaseAuth.instance.currentUser!.uid,
-                        serviceName:service.title, location: locationCont.text,
+                        serviceName:service==null?package!.title:service.title, location: locationCont.text,
                         date: selectedDate,
                         area: selectedRoomArea,
                         fullName: nameCont.text,

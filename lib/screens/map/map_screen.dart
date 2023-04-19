@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:homero/controllers/database/notification_database.dart';
+import 'package:homero/models/notifications_model.dart';
 import 'package:homero/models/order_model.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import "package:latlong2/latlong.dart" as latLng;
@@ -57,20 +60,28 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(height: 10,),
                 InkWell(
                   onTap: ()async{
-                    if(pickUpPoint!=null){
-                      var pos=pickUpPoint!.position;
-                      final coordinates =
-                       Coordinates(pos.latitude,pos.longitude);
-                      var address =
-                          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-                      first = address.first;
-                      order.pickUpPoint=first?.addressLine?.toString();
-                      OrderDatabase.addOrder(order);
-                      MyDialogUtils.showAnotherMessage(context, "Your Order has been placed successfuly ", "Ok",posAction: (){
-                        Navigator.pushNamed(context, HomeScreenView.routeName);
-                      });
-                      //Navigator.pushNamed(context, HomeScreenView.routeName);
+                    try{
+                      if(pickUpPoint!=null){
+                        var pos=pickUpPoint!.position;
+                        final coordinates =
+                        Coordinates(pos.latitude,pos.longitude);
+                        var address =
+                        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+                        first = address.first;
+                        order.pickUpPoint=first?.addressLine?.toString();
+                        OrderDatabase.addOrder(order);
+                        NotificationModel notification = NotificationModel(content: "You Successfully Ordered ${order.serviceName} from worker ${order.workerName} and your order will be delivered within 2 days ", date: order.date);
+                        NotificationDatabase.addNotification(FirebaseAuth.instance.currentUser!.uid, notification);
+                        MyDialogUtils.showAnotherMessage(context, "Your Order has been placed successfuly ", "Ok",posAction: (){
+                          Navigator.pushNamed(context, HomeScreenView.routeName);
+                        });
+                        //Navigator.pushNamed(context, HomeScreenView.routeName);
+                      }
                     }
+                    catch(e){
+
+                    }
+
                   },
                   child: Container(
                     width: MediaQuery

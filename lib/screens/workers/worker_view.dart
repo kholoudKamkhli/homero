@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../../controllers/database/worker_database.dart';
 import '../../controllers/view_models/workers_view_model.dart';
+import '../../models/package_model.dart';
 import '../service_details/service_details_view.dart';
 
 int numOfChoosenWorkers = 0;
@@ -28,7 +29,7 @@ class _WorkerViewState extends State<WorkerView> {
   static bool buttonClicked = false;
   List<WorkerModel> workers = [];
   SubServiceModel? service;
-
+  PackageModel ? package;
 
   Future<List<WorkerModel>> initWorkers(String serviceName) async {
     List<WorkerModel> workers = await WorkerDatabase.getWorkers(serviceName);
@@ -46,19 +47,25 @@ class _WorkerViewState extends State<WorkerView> {
   }
   void didChangeDependencies()async {
     super.didChangeDependencies();
-    if (service == null) {
-      service = ModalRoute.of(context)!.settings.arguments as SubServiceModel;
-      // viewModel.initWorkers(service!.title).then((loadedWorkers) {
-      //   setState(() {
-      //     workers = loadedWorkers;
-      //   });
-      // });
-      await viewModel.initWorkers(service?.title??"");
+    if (service == null&&package == null) {
+      // service=ModalRoute.of(context)!.settings.arguments as SubServiceModel;
+      // workers = viewModel.initWorkers(service?.title??"");
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      service = args['subService'] as SubServiceModel?;
+      package = args['package'] as PackageModel?;}
+    print(service?.title??"no title" );
+      if(service!=null){
+        print("inside service choice");
+        await viewModel.initWorkers(service?.title??"");
+      }
+      else if(package!=null){
+        print("inside package choice");
+        await viewModel.initWorkers(package?.title??"");
+      }
       print("Workers length ${workers.length}");
       setState(() {
       });
     }
-  }
 
   static changeColor() {
     buttonClicked = !buttonClicked;
@@ -66,8 +73,10 @@ class _WorkerViewState extends State<WorkerView> {
 
   @override
   Widget build(BuildContext context) {
-    SubServiceModel service =
-        ModalRoute.of(context)!.settings.arguments as SubServiceModel;
+     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+     service = args['subService'] as SubServiceModel?;
+     package = args['package'] as PackageModel?;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -77,7 +86,7 @@ class _WorkerViewState extends State<WorkerView> {
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
           ),
           onPressed: () => Navigator.pop(context),
@@ -87,7 +96,7 @@ class _WorkerViewState extends State<WorkerView> {
         create: (_) => viewModel,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             BlocBuilder<WorkerViewModel, WorkerSate>(builder: (context, state) {
@@ -111,7 +120,7 @@ class _WorkerViewState extends State<WorkerView> {
                 );
               }
                else{
-                 return Expanded(child: Center(child: CircularProgressIndicator(),));
+                 return const Expanded(child: Center(child: CircularProgressIndicator(),));
                }
             }),
             Container(
@@ -121,7 +130,7 @@ class _WorkerViewState extends State<WorkerView> {
               decoration: BoxDecoration(
                 color: buttonClicked == false
                     ? Colors.transparent
-                    : Color.fromARGB(255, 84, 84, 84),
+                    : const Color.fromARGB(255, 84, 84, 84),
               ),
               child: InkWell(
                 onTap: () {
@@ -132,6 +141,7 @@ class _WorkerViewState extends State<WorkerView> {
                       arguments: {
                         'service': service,
                         'workerName': workers[workerChosen].name,
+                        'package':package,
                       },
                     );
                   }

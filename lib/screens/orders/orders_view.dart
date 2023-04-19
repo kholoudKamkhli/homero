@@ -63,7 +63,9 @@ class _OrdersViewState extends State<OrdersView> {
                 children: [
                   TabBar(
                     onTap: (index) async {
-                      selectedIndex = index;
+                      setState(() {
+                        selectedIndex = index;
+                      });
                       if (index == 0) {
                         orders = viewModel.initOrders(0);
                       } else if (index == 1) {
@@ -71,8 +73,7 @@ class _OrdersViewState extends State<OrdersView> {
                       } else {
                         orders = viewModel.initOrders(2);
                       }
-                      setState(() {
-                      });
+
                     },
                     tabs: ordersType
                         .map((e) => OrderTabWidget(

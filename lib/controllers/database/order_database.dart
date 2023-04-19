@@ -14,7 +14,7 @@ class OrderDatabase {
 
   static Future<List<OrderModel>> getuserAllOrders(String userid) async {
     final snapshot = await getOrdersCollection().where("uId", isEqualTo: userid).get();
-    List<OrderModel> orders = snapshot.docs.map((doc) => doc.data()).toList();
+    List<OrderModel> orders = await snapshot.docs.map((doc) => doc.data()).toList();
     print(orders.length);
     return orders;
   }

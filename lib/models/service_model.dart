@@ -3,17 +3,15 @@ class ServiceModel {
   String id;
   String title;
   String imageUrl;
-  String? docID;
   ServiceModel({
-    docID = "",
     required this.id,
     required this.title,
     required this.imageUrl,
   });
   ServiceModel.fromJson(Map<String, dynamic> json)
-      : this(id: json["id"], title: json["title"], imageUrl: json["imageUrl"], docID: json["docID"]);
+      : this(id: json["id"], title: json["title"], imageUrl: json["imageUrl"],);
   Map<String, dynamic> toJson() {
-    return {"id": id, "title": title, "imageUrl": imageUrl, "docID": docID};
+    return {"id": id, "title": title, "imageUrl": imageUrl, };
   }
 }
 

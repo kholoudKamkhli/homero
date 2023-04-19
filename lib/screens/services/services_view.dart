@@ -19,15 +19,8 @@ class _ServicesViewState extends State<ServicesView> {
   String? searchService;
   int selectedIndex = 0;
   List<SubServiceModel> searchServices = [];
-
-  initSubService() async {
-    subServices = await ServiceDatabase.getServiceSubServices(
-        services[selectedIndex].id ?? "");
-  }
-
   initServices() async {
     services = await ServiceDatabase.getMainServices();
-
     Future.delayed(const Duration(seconds: 40));
     subServices = await ServiceDatabase.getServiceSubServices(
         services[selectedIndex].id ?? "");

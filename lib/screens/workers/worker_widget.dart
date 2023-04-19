@@ -28,7 +28,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
           numOfChoosenWorkers--;
           print("num of chosen workers $numOfChoosenWorkers");
           isSelected = !isSelected;
-          widget.changecolor(isSelected);
+          widget.changecolor(isSelected,widget.index);
         }
         else{
           if(numOfChoosenWorkers==0){
@@ -70,24 +70,15 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                     padding: EdgeInsets.only(left: 9, top: 6, bottom: 2),
                     child: Text(
                       widget.worker.name,
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromARGB(255, 40, 42, 46)),
+                      style: Theme.of(context).textTheme.bodyLarge),
                     ),
-                  ),
                   Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 9, vertical: 8),
                         child: Text(
                           widget.worker.jobTitle,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromARGB(255, 126, 127, 131)
-                              //color: Colors.black54
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                       const SizedBox(
@@ -95,11 +86,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                       ),
                       Text(
                         "${widget.worker.numOfRatings} Ratings",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            color: Color.fromARGB(255, 126, 127, 131)
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
                   ),
@@ -128,11 +115,7 @@ class _WorkerWidgetState extends State<WorkerWidget> {
                           SizedBox(width:50),
                           Icon(Icons.done,color: Color.fromARGB(255, 126, 127, 131,),size: 14,),
                           SizedBox(width: 3,),
-                          Text("${widget.worker.numOfTasks} Cleaning Tasks",style: TextStyle(
-                            color: Color.fromARGB(255, 126, 127, 131,),
-                            fontWeight: FontWeight.w500,
-                            fontSize:12 ,
-                          ),)
+                          Text("${widget.worker.numOfTasks} Cleaning Tasks",style: Theme.of(context).textTheme.bodySmall)
 
                         ],
                       ),

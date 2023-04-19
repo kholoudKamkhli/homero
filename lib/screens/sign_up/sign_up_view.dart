@@ -5,7 +5,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../controllers/view_models/auth_controllers/sign_up_controller/sign_up_view_model_bloc.dart';
 import '../home_screen/home_screen_view.dart';
 import '../sign_in/sign_in_view.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class SignUpView extends StatefulWidget {
   static const String routeName = "SignUp";
 
@@ -69,9 +69,9 @@ class _SignUpViewState extends State<SignUpView> {
                           const SizedBox(
                             height: 10,
                           ),
-                          const Text(
-                            "Sign Up",
-                            style: TextStyle(
+                           Text(
+                            AppLocalizations.of(context)!.sign_up,
+                            style: const TextStyle(
                               color: Color.fromARGB(255, 84, 84, 84),
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -93,12 +93,12 @@ class _SignUpViewState extends State<SignUpView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 8, right: 8, top: 8),
+                                 Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8, right: 8, top: 3),
                                   child: Text(
-                                    "Full name",
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.full_name,
+                                    style: const TextStyle(
                                       color: Color.fromARGB(255, 126, 127, 131),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -148,12 +148,12 @@ class _SignUpViewState extends State<SignUpView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                      right: 8, left: 8, top: 8),
+                                 Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 8, left: 8, top: 3),
                                   child: Text(
-                                    "Email",
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.email,
+                                    style: const TextStyle(
                                       color: Color.fromARGB(255, 126, 127, 131),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -206,15 +206,15 @@ class _SignUpViewState extends State<SignUpView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(
+                                 Padding(
+                                  padding: const EdgeInsets.only(
                                     left: 8,
                                     right: 8,
-                                    top: 8,
+                                    top: 3,
                                   ),
                                   child: Text(
-                                    "Password",
-                                    style: TextStyle(
+                                    AppLocalizations.of(context)!.password,
+                                    style: const TextStyle(
                                       color: Color.fromARGB(255, 126, 127, 131),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -252,16 +252,16 @@ class _SignUpViewState extends State<SignUpView> {
                             height: 10,
                           ),
                           Container(
-                            padding: EdgeInsets.only(bottom: 8, right: 5),
+                            padding: const EdgeInsets.only(bottom: 8, right: 5,left: 5),
                             alignment: Alignment.center,
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                                 horizontal: 50, vertical: 8),
                             width: 327,
                             height: 60,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: Color.fromARGB(255, 126, 127, 131)),
+                                  color: const Color.fromARGB(255, 126, 127, 131)),
                             ),
                             child: IntlPhoneField(
                               cursorColor:
@@ -269,7 +269,7 @@ class _SignUpViewState extends State<SignUpView> {
                               controller: numberCont,
                               decoration: InputDecoration(
                                 counterText: "",
-                                hintText: 'Phone Number',
+                                hintText: AppLocalizations.of(context)!.mobile_num,
                                 border: InputBorder.none,
                               ),
                               initialCountryCode: 'EG',
@@ -297,9 +297,9 @@ class _SignUpViewState extends State<SignUpView> {
                                   color:
                                       const Color.fromARGB(255, 52, 205, 196),
                                   borderRadius: BorderRadius.circular(10)),
-                              child: const Text(
-                                "Continue",
-                                style: TextStyle(
+                              child:  Text(
+                                AppLocalizations.of(context)!.cont,
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
@@ -312,9 +312,9 @@ class _SignUpViewState extends State<SignUpView> {
                               Navigator.pushNamed(
                                   context, SignInView.routeName);
                             },
-                            child: const Text(
-                              "Sign In",
-                              style: TextStyle(
+                            child:  Text(
+                              AppLocalizations.of(context)!.sign_in,
+                              style: const TextStyle(
                                   decoration: TextDecoration.underline,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -327,7 +327,7 @@ class _SignUpViewState extends State<SignUpView> {
                               Container(
                                 alignment: Alignment.topLeft,
                                 margin:
-                                    const EdgeInsets.only(left: 35, top: 18),
+                                    const EdgeInsets.only(left: 35, top: 18,right:35),
                                 child: Checkbox(
                                     value: valuesecond,
                                     //fillColor: MaterialStateProperty.resolveWith((states) => null),
@@ -346,11 +346,11 @@ class _SignUpViewState extends State<SignUpView> {
                                     const EdgeInsets.symmetric(vertical: 18),
                                 width: MediaQuery.of(context).size.width * 0.6,
                                 child: Text(
-                                  "By creating your account on Homero agree to the Terms of Uses, Conditions & Privacy Policies",
+                                  AppLocalizations.of(context)!.accept,
                                   style: TextStyle(
                                     color: validationError
                                         ? Colors.red
-                                        : Color.fromARGB(255, 84, 84, 84),
+                                        : const Color.fromARGB(255, 84, 84, 84),
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12,
                                   ),
@@ -373,9 +373,9 @@ class _SignUpViewState extends State<SignUpView> {
                               const SizedBox(
                                 width: 20,
                               ),
-                              const Text(
-                                "Or sign in with",
-                                style: TextStyle(
+                               Text(
+                                  AppLocalizations.of(context)!.or_sign_with,
+                                style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     color: Color.fromARGB(255, 84, 84, 84)),

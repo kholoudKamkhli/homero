@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/sign_up/sign_up_view.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../controllers/view_models/auth_controllers/sign_in_controller/sign_in_view_model_bloc.dart';
 
 class SignInView extends StatefulWidget {
@@ -95,9 +95,9 @@ class _SignInViewState extends State<SignInView> {
                           const SizedBox(
                             height: 50,
                           ),
-                          const Text(
-                            "Welcome back",
-                            style: TextStyle(
+                           Text(
+                            AppLocalizations.of(context)!.welcome_back,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 32,
                               fontWeight: FontWeight.w500,
@@ -106,9 +106,9 @@ class _SignInViewState extends State<SignInView> {
                           const SizedBox(
                             height: 20,
                           ),
-                          const Text(
-                            "Sign In",
-                            style: TextStyle(
+                           Text(
+                            AppLocalizations.of(context)!.sign_in,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -139,7 +139,7 @@ class _SignInViewState extends State<SignInView> {
                                       focusNode: emailFocus,
                                       decoration: InputDecoration(
                                         focusColor: Colors.white,
-                                        hintText: 'Email',
+                                        hintText: AppLocalizations.of(context)!.email,
                                         hintStyle: TextStyle(
                                           color: hintColor2,
                                         ),
@@ -176,7 +176,7 @@ class _SignInViewState extends State<SignInView> {
                                       focusNode: passwordFocus,
                                       decoration: InputDecoration(
                                         focusColor: Colors.white,
-                                        hintText: 'Password',
+                                        hintText: AppLocalizations.of(context)!.password,
                                         hintStyle: TextStyle(
                                           color: hintColor,
                                         ),
@@ -213,9 +213,9 @@ class _SignInViewState extends State<SignInView> {
                                           color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      child: const Text(
-                                        "Log in",
-                                        style: TextStyle(
+                                      child:  Text(
+                                        AppLocalizations.of(context)!.sign_in,
+                                        style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w600,
                                           color:
@@ -223,14 +223,6 @@ class _SignInViewState extends State<SignInView> {
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const Text(
-                                    "Forgot Password",
-                                    style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -247,8 +239,8 @@ class _SignInViewState extends State<SignInView> {
                                       const SizedBox(
                                         width: 20,
                                       ),
-                                      const Text(
-                                        "Or sign in with",
+                                       Text(
+                                        AppLocalizations.of(context)!.or_sign_with,
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
@@ -291,9 +283,9 @@ class _SignInViewState extends State<SignInView> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  const Text(
-                                    "Don't have an account?",
-                                    style: TextStyle(
+                                   Text(
+                                    AppLocalizations.of(context)!.dont_have_account,
+                                    style:const TextStyle(
                                       color: Colors.white,
                                       fontSize: 15,
                                     ),
@@ -303,9 +295,9 @@ class _SignInViewState extends State<SignInView> {
                                       Navigator.pushNamed(
                                           context, SignUpView.routeName);
                                     },
-                                    child: const Text(
-                                      "Sign up",
-                                      style: TextStyle(
+                                    child:  Text(
+                                      AppLocalizations.of(context)!.sign_up,
+                                      style: const TextStyle(
                                         decoration: TextDecoration.underline,
                                         color: Colors.white,
                                         fontSize: 15,

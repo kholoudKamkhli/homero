@@ -5,7 +5,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/map/map_screen.dart';
+import 'package:homero/screens/notifications/notification_view.dart';
 import 'package:homero/screens/orders/orders_view.dart';
+import 'package:homero/screens/package/selected_package_screen.dart';
 import 'package:homero/screens/payment/payment_view.dart';
 import 'package:homero/screens/profile/edit_profile.dart';
 import 'package:homero/screens/profile/payment_history.dart';
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
           SelectedServiceView.routeName:(_)=>SelectedServiceView(),
           PaymentHistory.routeName:(_)=>PaymentHistory(),
           ProfileView.routeName:(_)=>ProfileView(),
+          SelectedPackageView.routeName:(_)=>SelectedPackageView(),
+          NotificationView.routeName:(_)=>NotificationView(),
         },
         //initialRoute: FirebaseAuth.instance.currentUser!=null?HomeScreenView.routeName:SplashScreenOne.routeName,
         initialRoute: SignInView.routeName,

@@ -11,7 +11,13 @@ class SubServiceWidget extends StatelessWidget {
 
     return InkWell(
       onTap: (){
-        Navigator.pushNamed(context, WorkerView.routeName,arguments: subservice);
+        Navigator.pushNamed(context, WorkerView.routeName,
+          arguments: {
+          'subService': subservice,
+          'package': null,
+        },
+          //arguments: subservice
+        );
       },
       child: Card(
         shape: RoundedRectangleBorder(

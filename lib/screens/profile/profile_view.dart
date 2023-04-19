@@ -7,6 +7,7 @@ import 'package:homero/screens/profile/payment_history.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../controllers/database/user_database.dart';
+import '../notifications/notification_view.dart';
 import 'scheduled_view.dart';
 import 'edit_profile.dart';
 
@@ -114,7 +115,9 @@ class _ProfileViewState extends State<ProfileView> {
                     height: 25,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, NotificationView.routeName);
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Row(

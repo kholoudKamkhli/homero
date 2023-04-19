@@ -79,23 +79,23 @@ class ServiceDatabase {
     }
     return subServices;
   }
-  static Future<List<ServiceModel>> searchServiceByTitle(String title) async {
-    List<ServiceModel> searchResults = [];
-    final snapshot = await FirebaseFirestore.instance
-        .collection(ServiceModel.COLLECTION_NAME)
-        .where("title", isEqualTo: title)
-        .get();
-
-    if (snapshot.docs.isNotEmpty) {
-      snapshot.docs.forEach((doc) {
-        final service = ServiceModel.fromJson(doc.data());
-        service.docID = doc.id;
-        searchResults.add(service);
-      });
-    }
-    print("Search result ${searchResults[0]}");
-    return searchResults;
-  }
+  // static Future<List<ServiceModel>> searchServiceByTitle(String title) async {
+  //   List<ServiceModel> searchResults = [];
+  //   final snapshot = await FirebaseFirestore.instance
+  //       .collection(ServiceModel.COLLECTION_NAME)
+  //       .where("title", isEqualTo: title)
+  //       .get();
+  //
+  //   if (snapshot.docs.isNotEmpty) {
+  //     snapshot.docs.forEach((doc) {
+  //       final service = ServiceModel.fromJson(doc.data());
+  //       service.id = doc.id;
+  //       searchResults.add(service);
+  //     });
+  //   }
+  //   print("Search result ${searchResults[0]}");
+  //   return searchResults;
+  // }
   static searchServiceByTitle2(String title)async{
     var snapshot = await getServicesCollection().get();
     List<dynamic> services = snapshot.docs

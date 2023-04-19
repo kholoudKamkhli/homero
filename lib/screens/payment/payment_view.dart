@@ -107,7 +107,7 @@ class _PaymentViewState extends State<PaymentView>
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 30.0),
                       child: Text(
-                        "${DateFormat.yMMMEd().format(order.date)}",
+                        DateFormat.yMMMEd().format(order.date),
                         style: const TextStyle(
                           color: Color.fromARGB(255, 126, 127, 131),
                           fontSize: 14,

@@ -9,6 +9,7 @@ class OrderViewModel extends Cubit<OrderState>{
   OrderViewModel():super(LoadingState());
   initOrders(int index) async {
     try{
+      emit(LoadingState());
       if(index==0){
         orders = await OrderDatabase.getuserAllOrders(
             FirebaseAuth.instance.currentUser!.uid);
