@@ -29,8 +29,6 @@ class OTPViewModelBloc extends Cubit<OTPState>{
     } catch (e) {
       emit(ErrorOTP(e.toString()));
     }
-
-
   }
 }
 abstract class OTPState{}

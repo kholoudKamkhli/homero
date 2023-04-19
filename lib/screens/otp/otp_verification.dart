@@ -264,7 +264,7 @@ class OTPVerificstion extends StatelessWidget {
 
                                 endWidget: InkWell(
                                   onTap: (){
-                                    //signUpViewModelBloc.sinInWithPhone(phone);
+                                    signUpViewModelBloc.sinInWithPhone(phone);
                                   },
                                   child: const Text(
                                     "Resend",

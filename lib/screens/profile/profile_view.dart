@@ -5,6 +5,7 @@ import 'package:homero/screens/home_screen/home_screen_view.dart';
 import 'package:homero/screens/orders/orders_view.dart';
 import 'package:homero/screens/profile/payment_history.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:homero/screens/sign_in/sign_in_view.dart';
 
 import '../../controllers/database/user_database.dart';
 import '../notifications/notification_view.dart';
@@ -330,7 +331,10 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamedAndRemoveUntil(context, SignInView.routeName, (route) => false);
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Row(
